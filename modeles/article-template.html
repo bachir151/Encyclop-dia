@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="{{DESCRIPTION_COURTE}}">
+  <title>{{TITRE}} — Encyclopédia</title>
+  <!-- Adapter les ../../ selon la profondeur du dossier canonique. -->
+  <link rel="stylesheet" href="{{RACINE}}moteur/styles.css">
+</head>
+<body class="article-body">
+  <nav class="article-nav" aria-label="Navigation">
+    <a href="{{RACINE}}">✳ ENCYCLOPÉDIA</a>
+    <a href="{{RACINE}}#explorer">← Retour au graphe</a>
+  </nav>
+  <main class="article-main">
+    <div class="eyebrow">{{DOMAINE}} / {{SOUS_DOMAINE}} · {{NIVEAU}}</div>
+    <h1>{{QUESTION_FONDAMENTALE}}</h1>
+    <p class="article-intro">{{SITUATION_CONCRETE}}</p>
+
+    <section class="lesson-card">
+      <div class="eyebrow">01 · LE PROBLÈME</div>
+      <h2>Quel problème cherche-t-on à résoudre ?</h2>
+      <p>{{PROBLEME_ET_CONTRAINTE}}</p>
+      <p><strong>Notre question :</strong> {{QUESTION_CENTRALE}}</p>
+    </section>
+
+    <section class="lesson-card">
+      <div class="eyebrow">02 · LES PREMIERS PRINCIPES</div>
+      <h2>Reconstruisons la solution</h2>
+      <ol>
+        <li>{{PRINCIPE_1}}</li>
+        <li>{{PRINCIPE_2}}</li>
+        <li>{{CONSEQUENCE_LOGIQUE}}</li>
+      </ol>
+      <p>{{EXPLICATION_MECANISME_ET_LIMITES_ANALOGIE}}</p>
+    </section>
+
+    <section class="lesson-card">
+      <div class="eyebrow">03 · EXPÉRIMENTER</div>
+      <h2>Manipuler le mécanisme</h2>
+      <!-- Ajouter autant d'étapes et de panneaux SVG que nécessaire.
+           data-step-min/max indiquent les étapes où un panneau s'affiche. -->
+      <div class="sim-stage" data-stepper>
+        <svg viewBox="0 0 640 190" role="img" aria-label="{{DESCRIPTION_SCHEMA}}">
+          <rect x="40" y="55" width="170" height="70" rx="10" fill="#dcebdc"/>
+          <rect x="430" y="55" width="170" height="70" rx="10" fill="#dcebf6"/>
+          <text x="125" y="95" text-anchor="middle" fill="#1C322D">{{OBJET_A}}</text>
+          <text x="515" y="95" text-anchor="middle" fill="#1C322D">{{OBJET_B}}</text>
+          <g data-step-panel data-step-min="1">
+            <path d="M215 90 H425" stroke="#B88532" stroke-width="4"/>
+            <path d="M412 83 L425 90 L412 97" fill="none" stroke="#B88532" stroke-width="4"/>
+          </g>
+          <text x="320" y="160" data-step-caption text-anchor="middle" fill="#1C322D">Étape 1 : {{ETAT_INITIAL}}</text>
+        </svg>
+        <ol class="sr-only" data-step-captions>
+          <li>Étape 1 : {{ETAT_INITIAL}}</li>
+          <li>Étape 2 : {{ACTION_OU_TRANSITION}}</li>
+        </ol>
+        <div class="sim-controls">
+          <button type="button" data-step-back>← Précédent</button>
+          <button type="button" data-step-next>Suivant →</button>
+          <span data-step-status class="sim-status" aria-live="polite">Étape 1 sur 2</span>
+        </div>
+      </div>
+      <p>{{INTERPRETATION_DE_L_EXPERIENCE}}</p>
+    </section>
+
+    <section class="lesson-card">
+      <div class="eyebrow">04 · TRANSFÉRER</div>
+      <h2>Quand cette idée s'applique-t-elle ?</h2>
+      <p>{{CAS_REEL_ET_CONTRE_EXEMPLE}}</p>
+    </section>
+
+    <section class="lesson-card quiz">
+      <div class="eyebrow">05 · VÉRIFIER</div>
+      <h2>Ai-je réellement compris ?</h2>
+      <form data-quiz>
+        <fieldset data-answer="b" data-explanation="{{EXPLICATION_REPONSE}}">
+          <legend>{{QUESTION_QCM_1}}</legend>
+          <label><input type="radio" name="q1" value="a" required> {{MAUVAISE_REPONSE_1}}</label>
+          <label><input type="radio" name="q1" value="b"> {{BONNE_REPONSE}}</label>
+          <label><input type="radio" name="q1" value="c"> {{MAUVAISE_REPONSE_2}}</label>
+        </fieldset>
+        <!-- Dupliquer fieldset en donnant un name unique q2, q3... -->
+        <button type="submit">Corriger mes réponses</button>
+        <div class="quiz-result" data-quiz-result aria-live="polite" hidden></div>
+      </form>
+    </section>
+
+    <section class="note">
+      <strong>À retenir :</strong> {{SYNTHESE_CONCISE_ET_PRECISE}}
+    </section>
+    <section class="lesson-card">
+      <div class="eyebrow">06 · RELIER</div>
+      <h2>Pour continuer</h2>
+      <p>Prérequis : {{PREREQUIS}}. Concepts liés : {{CONCEPTS_LIES}}.</p>
+      <a href="{{RACINE}}#explorer">Explorer ces relations sur le graphe →</a>
+    </section>
+  </main>
+  <script src="{{RACINE}}moteur/lesson.js" defer></script>
+</body>
+</html>

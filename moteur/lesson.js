@@ -20,11 +20,10 @@ function initializeStepper(root) {
     panels.forEach(panel => {
       const min = Number(panel.dataset.stepMin ?? 0);
       const max = Number(panel.dataset.stepMax ?? min);
-      panel.hidden = !(step >= min && step <= max);
-      panel.style.display = panel.hidden ? 'none' : '';
+      panel.toggleAttribute('hidden', !(step >= min && step <= max));
     });
     caption.textContent = captions[step];
-    status.textContent = `Étape ${step + 1} sur ${count}`;
+    status.textContent = `Étape ${step + 1} sur ${count} : ${captions[step]}`;
     back.disabled = step === 0;
     next.textContent = step === count - 1 ? 'Recommencer ↻' : 'Suivant →';
   }

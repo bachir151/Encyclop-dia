@@ -2,7 +2,6 @@ const $ = (id) => document.getElementById(id);
 const canvas = $('graph'), ctx = canvas.getContext('2d');
 let concepts = [], relations = [], selected = '', activeRelation = null, mode = 'free';
 let yaw = .24, pitch = -.14, zoom = 1, dragging = false, moved = false, previous = null, rendered = [], highlight = '';
-const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const byId = id => concepts.find(c => c.id === id);
 const sanitizeColor = color => /^#[0-9a-f]{6}$/i.test(color) ? color : '#ebb552';
 function anglePosition(point) {
@@ -30,8 +29,12 @@ function prerequisiteOrder(id,seen=new Set(),out=[]) {if(seen.has(id))return out
 function el(tag,className,text){const n=document.createElement(tag);if(className)n.className=className;if(text!==undefined)n.textContent=text;return n}
 function updatePanel(){
  const c=byId(selected);if(!c)return;
- const card=$('concept-card');card.replaceChildren();
+ const card=$('concept-card');
+ const restoreFocus = card.contains(document.activeElement);
+ card.replaceChildren();
  const title=el('h3','concept-title',c.titre),pill=el('span','pill',c.categorie),summary=el('p','concept-summary',c.resume);card.append(title,pill,summary);
+ title.tabIndex = -1;
+ if (restoreFocus) title.focus({preventScroll:true});
  const edges = related(selected);
  if (edges.length) {
    const heading = el('h4', 'related-heading', 'RELATIONS EXPLIQUÉES');
@@ -54,9 +57,40 @@ function updatePanel(){
    card.append(heading, relationList);
  }
  const link=el(c.url?'a':'span','concept-link'+(c.url?'':' disabled'),c.url?'Découvrir cet article ↗':'Article à venir');if(c.url)link.href=c.url;card.append(link);
- const list=$('concept-list');list.replaceChildren();concepts.filter(x=>x.titre.toLowerCase().includes(highlight)).forEach(x=>{const b=el('button',x.id===selected?'selected':'',x.titre);b.type='button';b.setAttribute('aria-pressed',String(x.id===selected));b.append(el('span','',x.id===selected?'●':'↗'));b.addEventListener('click',()=>choose(x.id));list.append(b)});
+ updateConceptList();
  if(mode==='guided'){const order=prerequisiteOrder(selected);$('guide-text').textContent=order.map((id,i)=>`${i+1}. ${byId(id)?.titre||id}`).join(' → ')+' · Les articles non encore écrits sont des étapes futures.';}
  $('graph-status').textContent=`${c.titre} sélectionné, ${edges.length} connexion(s).`;draw();
+}
+function populateConceptList() {
+ const list = $('concept-list');
+ list.replaceChildren();
+ for (const concept of concepts) {
+   const button = el('button', '', concept.titre);
+   button.type = 'button';
+   button.dataset.conceptId = concept.id;
+   button.append(el('span', '', '↗'));
+   button.addEventListener('click', () => choose(concept.id));
+   list.append(button);
+ }
+ const empty = el('p', '', 'Aucun concept ne correspond à votre recherche.');
+ empty.id = 'search-empty';
+ empty.hidden = true;
+ list.append(empty);
+}
+function updateConceptList() {
+ if (!$('search-empty')) return 0;
+ let visible = 0;
+ for (const button of $('concept-list').querySelectorAll('button')) {
+   const concept = byId(button.dataset.conceptId);
+   button.hidden = !concept.titre.toLowerCase().includes(highlight);
+   visible += Number(!button.hidden);
+   const chosen = concept.id === selected;
+   button.classList.toggle('selected', chosen);
+   button.setAttribute('aria-pressed', String(chosen));
+   button.querySelector('span').textContent = chosen ? '●' : '↗';
+ }
+ $('search-empty').hidden = visible !== 0;
+ return visible;
 }
 function choose(id){if(!byId(id))return;selected=id;activeRelation=null;updatePanel()}
 function setMode(next){mode=next;for(const name of ['free','guided']){$('mode-'+name).classList.toggle('active',next===name);$('mode-'+name).setAttribute('aria-pressed',String(next===name));}$('guide-note').hidden=next!=='guided';updatePanel()}
@@ -84,7 +118,7 @@ canvas.addEventListener('pointercancel',()=>{dragging=false});
 canvas.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.max(.5,Math.min(2.2,zoom*(e.deltaY>0?.91:1.09)));draw()},{passive:false});
 $('reset-camera').addEventListener('click',()=>{yaw=.24;pitch=-.14;zoom=1;draw()});
 $('mode-free').addEventListener('click',()=>setMode('free'));$('mode-guided').addEventListener('click',()=>setMode('guided'));
-$('search').addEventListener('input',e=>{highlight=e.target.value.trim().toLowerCase();updatePanel()});
+$('search').addEventListener('input',e=>{highlight=e.target.value.trim().toLowerCase();const count=updateConceptList();$('graph-status').textContent=`${count} concept(s) trouvé(s).`;draw()});
 window.addEventListener('resize',draw);
 function populateRelationDirectory(){
  const list=$('all-relations');
@@ -101,5 +135,5 @@ function populateRelationDirectory(){
  }
 }
 function populateLibrary(){const area=$('library-grid');area.replaceChildren();for(const c of concepts){const card=el('article','library-card');card.append(el('span','pill',c.categorie),el('h3','',c.titre),el('p','',c.resume));const link=el(c.url?'a':'span',c.url?'':'soon',c.url?'Lire l’article →':'À découvrir bientôt');if(c.url)link.href=c.url;card.append(link);area.append(card)}}
-async function start(){try{const [a,b]=await Promise.all([fetch('donnees/concepts.json'),fetch('donnees/relations.json')]);if(!a.ok||!b.ok)throw new Error('Fichiers de données indisponibles');concepts=await a.json();relations=await b.json();if(!Array.isArray(concepts)||!Array.isArray(relations))throw Error('Données invalides');$('count-concepts').textContent=concepts.length;$('count-links').textContent=relations.length;selected=concepts[0]?.id||'';populateLibrary();populateRelationDirectory();setMode('free');}catch(error){$('concept-card').textContent='Le catalogue ne peut pas être chargé. Ouvrez le projet avec un serveur HTTP statique (python3 -m http.server 8000).';$('graph-status').textContent=error.message;console.error(error)}}
+async function start(){try{const [a,b]=await Promise.all([fetch('donnees/concepts.json'),fetch('donnees/relations.json')]);if(!a.ok||!b.ok)throw new Error('Fichiers de données indisponibles');concepts=await a.json();relations=await b.json();if(!Array.isArray(concepts)||!Array.isArray(relations))throw Error('Données invalides');$('count-concepts').textContent=concepts.length;$('count-links').textContent=relations.length;selected=concepts[0]?.id||'';populateLibrary();populateRelationDirectory();populateConceptList();setMode('free');}catch(error){$('concept-card').textContent='Le catalogue ne peut pas être chargé. Ouvrez le projet avec un serveur HTTP statique (python3 -m http.server 8000).';$('graph-status').textContent=error.message;console.error(error)}}
 start();

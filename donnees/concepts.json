@@ -177,5 +177,65 @@
       3.1
     ],
     "couleur": "#F1CDBE"
+  },
+  {
+    "id": "renoncement-radical",
+    "titre": "Les spiritualités du renoncement radical",
+    "categorie": "Spiritualités / Étude comparative",
+    "url": "spiritualites/renoncement/renoncement-radical/",
+    "resume": "Comparer les renoncements au corps, aux possessions, à la réputation et à l'ego sans confondre leurs finalités.",
+    "statut": "publie",
+    "prerequis": [],
+    "position": [
+      -4.2,
+      0.8,
+      1.4
+    ],
+    "couleur": "#EBB552"
+  },
+  {
+    "id": "ascese",
+    "titre": "Ascèse",
+    "categorie": "Spiritualités / Pratiques",
+    "url": null,
+    "resume": "Une discipline volontaire du corps et de la conduite orientée vers un idéal spirituel.",
+    "statut": "a_rediger",
+    "prerequis": [],
+    "position": [
+      -5.8,
+      2.4,
+      0.5
+    ],
+    "couleur": "#A3CBB0"
+  },
+  {
+    "id": "detachement",
+    "titre": "Détachement",
+    "categorie": "Spiritualités / Philosophie",
+    "url": null,
+    "resume": "Ne pas être intérieurement dominé par l'appropriation ou la dépendance à ce qui change.",
+    "statut": "a_rediger",
+    "prerequis": [],
+    "position": [
+      -5.8,
+      -0.4,
+      2.1
+    ],
+    "couleur": "#F1CDBE"
+  },
+  {
+    "id": "non-soi",
+    "titre": "Non-soi (anattā)",
+    "categorie": "Spiritualités / Bouddhisme",
+    "url": null,
+    "resume": "Mise en cause de l'existence d'un soi substantiel, permanent et indépendant.",
+    "statut": "a_rediger",
+    "prerequis": [],
+    "position": [
+      -3.2,
+      -1.7,
+      1.2
+    ],
+    "couleur": "#B5D6D2"
   }
 ]

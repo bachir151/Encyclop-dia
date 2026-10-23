@@ -11,6 +11,7 @@ Une encyclopédie personnelle et interactive construite selon l'approche **First
 - **Modèle pédagogique réutilisable** dans `modeles/article-template.html` et composants de simulation/QCM dans `moteur/lesson.js`.
 - L'article ARP utilise désormais ce moteur partagé (animation et QCM).
 - Article publié sur **systemctl** : schéma pas à pas, simulation des services Linux et QCM corrigé.
+- Article publié sur **les paquets, APT et Snap** : échanges avec les dépôts, pannes réseau, comparaison des systèmes, schéma pas à pas et QCM.
 - Relations explicatives consultables et sélectionnables dans les fiches, les arêtes du graphe et une liste textuelle accessible.
 - Prérequis pédagogiques distingués des liens conceptuels ; contrôle automatique de cohérence avec Node 22.
 

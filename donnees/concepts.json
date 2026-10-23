@@ -162,5 +162,20 @@
       3.7
     ],
     "couleur": "#EBB552"
+  },
+  {
+    "id": "apt-snap",
+    "titre": "Paquets, APT et Snap",
+    "categorie": "Informatique / Systèmes / Linux",
+    "url": "informatique/systemes/linux/apt-snap/",
+    "resume": "Du paquet logiciel au serveur : comprendre APT, Snap, les dépendances et les différences entre systèmes.",
+    "statut": "publie",
+    "prerequis": [],
+    "position": [
+      -1.6,
+      1.8,
+      3.1
+    ],
+    "couleur": "#F1CDBE"
   }
 ]

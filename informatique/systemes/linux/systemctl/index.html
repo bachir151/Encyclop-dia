@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Comprendre systemctl par les premiers principes : processus, services, systemd, commandes, simulation interactive et QCM.">
+<title>systemctl : qui commande les services Linux ? — Encyclopédia</title>
+<link rel="stylesheet" href="../../../../moteur/styles.css">
+<link rel="stylesheet" href="simulation.css">
+</head>
+<body class="article-body">
+<a class="skip" href="#contenu">Aller au contenu</a>
+<nav class="article-nav" aria-label="Navigation">
+<a href="../../../../">✳ ENCYCLOPÉDIA</a><a href="../../../../#explorer">← Graphe des connaissances</a>
+</nav>
+<main class="article-main" id="contenu">
+<div class="eyebrow">INFORMATIQUE / SYSTÈMES / LINUX · FIRST PRINCIPLES</div>
+<h1>Qui fait tourner les services sous Linux ?</h1>
+<p class="article-intro">Ton serveur web doit répondre aux visiteurs, même quand personne n'a ouvert de terminal. Qui le démarre ? Qui le redémarre s'il s'arrête ? Et comment lui dire de démarrer au prochain allumage ? C'est ce problème qui nous mène à <strong>systemctl</strong>.</p>
+
+<section class="lesson-card">
+<div class="eyebrow">01 · LE PROBLÈME</div>
+<h2>Quel problème cherche-t-on à résoudre ?</h2>
+<p>Imaginons un Raspberry Pi qui héberge un site web. Tu l'allumes : le site doit devenir disponible <em>sans intervention humaine</em>. Tu veux aussi pouvoir arrêter temporairement le serveur pour une maintenance, connaître son état et examiner ses erreurs.</p>
+<p><strong>Le besoin fondamental :</strong> confier à Linux la gestion du cycle de vie des programmes qui rendent un service en arrière-plan.</p>
+</section>
+
+<section class="lesson-card">
+<div class="eyebrow">02 · PARTIR DE ZÉRO</div>
+<h2>Du programme au service</h2>
+<ol>
+<li><strong>Un programme</strong> est du code sur le disque ; quand on l'exécute, il devient un <strong>processus</strong> en mémoire.</li>
+<li>Certains processus doivent rester actifs longtemps pour fournir une fonction : serveur SSH, serveur web, base de données… On parle souvent de <strong>services</strong>.</li>
+<li>Il faut un <strong>gestionnaire</strong> capable de lancer, arrêter, surveiller et configurer leur démarrage. Sur de nombreuses distributions Linux, c'est <strong>systemd</strong>.</li>
+<li>L'administrateur a besoin d'un moyen de parler à ce gestionnaire : c'est le rôle de <strong>systemctl</strong>, un outil en ligne de commande.</li>
+</ol>
+<div class="principle"><strong>À déduire :</strong> <code>systemctl</code> ne contient pas lui-même ton serveur web. Il demande à <code>systemd</code> de gérer une <em>unité</em>, par exemple <code>nginx.service</code>.</div>
+</section>
+
+<section class="lesson-card">
+<div class="eyebrow">03 · VOIR LE MÉCANISME</div>
+<h2>Qui parle à qui ?</h2>
+<p>Avance étape par étape dans ce schéma. Les flèches représentent la chaîne de commande, pas le trajet du trafic web.</p>
+<div class="sim-stage" data-stepper>
+<svg viewBox="0 0 720 235" role="img" aria-label="Schéma : administrateur vers systemctl, puis systemd, puis service. Les flèches apparaissent progressivement.">
+<rect x="12" y="48" width="158" height="104" rx="13" fill="#1c322d"/><text x="91" y="89" fill="#f8f3ee" font-size="17" text-anchor="middle">Administrateur</text><text x="91" y="117" fill="#ebb552" font-size="13" text-anchor="middle">terminal</text>
+<rect x="197" y="48" width="150" height="104" rx="13" fill="#ebd7a9"/><text x="272" y="89" fill="#1c322d" font-size="19" font-weight="bold" text-anchor="middle">systemctl</text><text x="272" y="117" fill="#425f4d" font-size="13" text-anchor="middle">commande</text>
+<rect x="374" y="48" width="150" height="104" rx="13" fill="#b8d3bd"/><text x="449" y="89" fill="#1c322d" font-size="19" font-weight="bold" text-anchor="middle">systemd</text><text x="449" y="117" fill="#425f4d" font-size="13" text-anchor="middle">gestionnaire</text>
+<rect x="551" y="48" width="158" height="104" rx="13" fill="#e6c3bb"/><text x="630" y="89" fill="#1c322d" font-size="16" text-anchor="middle">nginx.service</text><text x="630" y="117" fill="#425f4d" font-size="13" text-anchor="middle">service web</text>
+<g data-step-panel data-step-min="1" data-step-max="3"><path d="M174 101 H193" stroke="#ad7e36" stroke-width="4"/><path d="M185 94 L193 101 L185 108" stroke="#ad7e36" stroke-width="3" fill="none"/></g>
+<g data-step-panel data-step-min="2" data-step-max="3"><path d="M351 101 H370" stroke="#ad7e36" stroke-width="4"/><path d="M362 94 L370 101 L362 108" stroke="#ad7e36" stroke-width="3" fill="none"/></g>
+<g data-step-panel data-step-min="3"><path d="M528 101 H547" stroke="#ad7e36" stroke-width="4"/><path d="M539 94 L547 101 L539 108" stroke="#ad7e36" stroke-width="3" fill="none"/></g>
+<text x="360" y="199" data-step-caption text-anchor="middle" font-size="15" fill="#1c322d">1. Tu veux démarrer un serveur web.</text>
+</svg>
+<ol class="sr-only" data-step-captions>
+<li>1. Tu veux démarrer un serveur web.</li>
+<li>2. Tu saisis : sudo systemctl start nginx.</li>
+<li>3. systemctl transmet la demande à systemd.</li>
+<li>4. systemd lance l'unité nginx.service et ses dépendances nécessaires.</li>
+</ol>
+<div class="sim-controls">
+<button type="button" data-step-back>← Précédent</button>
+<button type="button" data-step-next>Suivant →</button>
+<span class="sim-status" data-step-status aria-live="polite">Étape 1 sur 4</span>
+</div>
+</div>
+<p><strong>Nuance :</strong> <code>systemd</code> est habituellement le processus d'initialisation (<code>PID 1</code>) sur ces machines. D'autres systèmes d'initialisation existent : <code>systemctl</code> n'est pas universel sur tous les Linux.</p>
+</section>
+
+<section class="lesson-card">
+<div class="eyebrow">04 · EXPÉRIMENTER</div>
+<h2>Un laboratoire sans risque</h2>
+<p>Imagine un service nommé <code>demo.service</code>. Clique sur les commandes : la simulation modifie <strong>deux propriétés indépendantes</strong>. Elle ne touche pas à ton ordinateur.</p>
+<div class="service-lab" data-service-lab>
+<div class="lab-state" aria-live="polite">
+<div class="state-card"><span>ÉTAT ACTUEL</span><strong data-running>Arrêté</strong><small>Le processus tourne-t-il maintenant ?</small></div>
+<div class="state-card"><span>AU DÉMARRAGE</span><strong data-enabled>Désactivé</strong><small>Démarrera-t-il automatiquement au prochain boot ?</small></div>
+</div>
+<div class="lab-actions" aria-label="Commandes à simuler">
+<button type="button" data-service-action="start">start</button>
+<button type="button" data-service-action="stop">stop</button>
+<button type="button" data-service-action="restart">restart</button>
+<button type="button" data-service-action="enable">enable</button>
+<button type="button" data-service-action="disable">disable</button>
+<button type="button" data-service-action="enable-now">enable --now</button>
+<button type="button" data-service-action="reboot" class="accent">⟳ reboot</button>
+<button type="button" data-service-action="reset" class="subtle">Réinitialiser</button>
+</div>
+<p class="lab-command">Commande : <code data-command>aucune</code></p>
+<p class="lab-explanation" data-explanation>État initial : service arrêté et non activé au démarrage.</p>
+<div class="lab-log"><strong>Journal de la simulation</strong><ol data-log aria-live="polite"><li>En attente d'une commande.</li></ol></div>
+</div>
+<p class="subnote">Modèle volontairement simplifié : on suppose un service valide, sans panne ni dépendances particulières, et des commandes exécutées avec les droits nécessaires. En réalité, un service peut échouer, avoir d'autres états ou être démarré par un déclencheur externe.</p>
+</section>
+
+<section class="lesson-card">
+<div class="eyebrow">05 · APPLIQUER SUR LINUX</div>
+<h2>Les commandes qui comptent</h2>
+<div class="command-grid">
+<div><code>sudo systemctl start nginx</code><p>Démarre le service <em>maintenant</em>.</p></div>
+<div><code>sudo systemctl stop nginx</code><p>Arrête le service <em>maintenant</em>.</p></div>
+<div><code>sudo systemctl restart nginx</code><p>Redémarre le service.</p></div>
+<div><code>sudo systemctl enable nginx</code><p>Configure son démarrage automatique, sans nécessairement le lancer maintenant.</p></div>
+<div><code>sudo systemctl disable nginx</code><p>Retire cette activation automatique, sans arrêter un service déjà en cours.</p></div>
+<div><code>sudo systemctl enable --now nginx</code><p>Active pour les prochains démarrages <em>et</em> démarre immédiatement.</p></div>
+<div><code>systemctl status nginx</code><p>Affiche l'état et des informations récentes.</p></div>
+<div><code>journalctl -u nginx</code><p>Consulte les journaux associés au service (outil distinct de <code>systemctl</code>).</p></div>
+</div>
+<p><strong>Attention :</strong> sur un serveur distant, arrêter <code>ssh.service</code> ou <code>sshd.service</code> peut interrompre ton accès. Le nom exact des unités dépend de la distribution.</p>
+</section>
+
+<section class="lesson-card quiz">
+<div class="eyebrow">06 · VÉRIFIER</div>
+<h2>QCM : as-tu compris la logique ?</h2>
+<p>Choisis une réponse par question, puis consulte les explications.</p>
+<form data-quiz>
+<fieldset data-answer="b" data-explanation="systemctl est le client en ligne de commande : il transmet les demandes au gestionnaire systemd.">
+<legend>1. Quel est le rôle principal de <code>systemctl</code> ?</legend>
+<label><input type="radio" name="q1" value="a" required> Exécuter lui-même tous les serveurs web</label>
+<label><input type="radio" name="q1" value="b"> Donner des ordres au gestionnaire systemd</label>
+<label><input type="radio" name="q1" value="c"> Remplacer le noyau Linux</label>
+</fieldset>
+<fieldset data-answer="c" data-explanation="start agit sur le service en cours de fonctionnement ; enable configure surtout son lancement lors des prochains démarrages.">
+<legend>2. Après <code>sudo systemctl start demo</code>, sans <code>enable</code>, que sait-on ?</legend>
+<label><input type="radio" name="q2" value="a" required> Le service démarrera forcément au prochain boot</label>
+<label><input type="radio" name="q2" value="b"> Le système redémarre automatiquement</label>
+<label><input type="radio" name="q2" value="c"> Une demande de démarrage immédiat a été faite</label>
+</fieldset>
+<fieldset data-answer="a" data-explanation="disable retire l'activation automatique. Un service actif peut continuer à tourner jusqu'à ce qu'il soit arrêté.">
+<legend>3. Un service tourne déjà. Que fait normalement <code>disable</code> ?</legend>
+<label><input type="radio" name="q3" value="a" required> Il ne l'arrête pas immédiatement ; il retire son activation automatique</label>
+<label><input type="radio" name="q3" value="b"> Il tue immédiatement son processus</label>
+<label><input type="radio" name="q3" value="c"> Il supprime son programme du disque</label>
+</fieldset>
+<fieldset data-answer="b" data-explanation="enable --now combine l'activation au démarrage et une demande de démarrage immédiat.">
+<legend>4. Tu veux lancer maintenant un service et au prochain démarrage. Que choisir ?</legend>
+<label><input type="radio" name="q4" value="a" required> <code>systemctl status demo</code></label>
+<label><input type="radio" name="q4" value="b"> <code>sudo systemctl enable --now demo</code></label>
+<label><input type="radio" name="q4" value="c"> <code>sudo systemctl disable demo</code></label>
+</fieldset>
+<fieldset data-answer="c" data-explanation="systemctl status indique l'état. Pour un historique plus détaillé, journalctl -u nom.service interroge les journaux.">
+<legend>5. Quel outil consulter pour investiguer les logs d'un service ?</legend>
+<label><input type="radio" name="q5" value="a" required> <code>ip route</code></label>
+<label><input type="radio" name="q5" value="b"> <code>systemctl enable</code></label>
+<label><input type="radio" name="q5" value="c"> <code>journalctl -u demo.service</code></label>
+</fieldset>
+<button type="submit">Corriger mes réponses</button>
+<div class="quiz-result" data-quiz-result aria-live="polite" hidden></div>
+</form>
+</section>
+
+<section class="note"><strong>À retenir :</strong> un <em>service</em> est une fonction assurée par un ou plusieurs processus ; <code>systemd</code> peut gérer son cycle de vie ; <code>systemctl</code> est le moyen courant de lui donner des ordres. <strong><code>start</code> ≠ <code>enable</code></strong> : « maintenant » et « au démarrage » sont deux questions différentes.</section>
+
+<section class="lesson-card">
+<div class="eyebrow">07 · RELIER LES IDÉES</div>
+<h2>Ce que cette idée éclaire</h2>
+<p>Les notions de <strong>processus</strong>, <strong>service</strong> et <strong>systemd</strong> sont les voisins directs de cet article. Elles figurent aussi dans le graphe 3D de Bash World comme pistes d'exploration.</p>
+<p><a href="../../../../#explorer">Explorer les liens dans le graphe →</a></p>
+</section>
+</main>
+<script src="../../../../moteur/lesson.js" defer></script>
+<script src="simulation.js" defer></script>
+</body>
+</html>

@@ -12,6 +12,7 @@ const errors = [];
 const allowedTypes = new Set(['utilise', 'application', 'analogie', 'contraste', 'exemple']);
 const allowedStatuses = new Set(['a_rediger', 'demonstration', 'publie']);
 const fail = message => errors.push(message);
+const prerequisites = concept => Array.isArray(concept?.prerequis) ? concept.prerequis : [];
 function readJson(name) {
   try {
     const value = JSON.parse(readFileSync(resolve(root, 'donnees', name), 'utf8'));
@@ -38,6 +39,14 @@ for (const [index, concept] of concepts.entries()) {
   if (ids.has(id)) fail('ID dupliqué : ' + id);
   ids.set(id, concept);
   if (!allowedStatuses.has(concept.statut)) fail(id + ' : statut inconnu ' + String(concept.statut));
+  for (const field of ['titre', 'categorie', 'resume']) {
+    if (typeof concept[field] !== 'string' || !concept[field].trim()) fail(id + ' : ' + field + ' doit être un texte non vide.');
+  }
+  if (!Array.isArray(concept.position) || concept.position.length !== 3 || !concept.position.every(Number.isFinite)) {
+    fail(id + ' : position doit contenir trois nombres finis.');
+  }
+  if (typeof concept.couleur !== 'string' || !/^#[0-9a-f]{6}$/i.test(concept.couleur)) fail(id + ' : couleur hexadécimale invalide.');
+  if (concept.statut === 'a_rediger' && concept.url != null) fail(id + ' : un article à rédiger ne doit pas avoir une URL.');
   if (!Array.isArray(concept.prerequis)) fail(id + ' : prerequis doit être un tableau.');
   if (concept.url !== null && concept.url !== undefined) {
     if (typeof concept.url !== 'string' || !concept.url.trim() || concept.url.startsWith('/') ||
@@ -55,7 +64,7 @@ for (const [index, concept] of concepts.entries()) {
 }
 
 for (const [id, concept] of ids) {
-  for (const prerequisite of concept.prerequis || []) {
+  for (const prerequisite of prerequisites(concept)) {
     if (!ids.has(prerequisite)) fail(id + ' : prérequis inexistant ' + String(prerequisite));
     if (prerequisite === id) fail(id + ' : prérequis réflexif.');
   }
@@ -70,7 +79,7 @@ function visit(id, stack) {
     return;
   }
   colors.set(id, 1);
-  for (const prerequisite of ids.get(id)?.prerequis || []) {
+  for (const prerequisite of prerequisites(ids.get(id))) {
     if (ids.has(prerequisite)) visit(prerequisite, [...stack, id]);
   }
   colors.set(id, 2);
@@ -98,5 +107,5 @@ if (errors.length) {
   process.exitCode = 1;
 } else {
   console.log('✅ Encyclopédia : ' + concepts.length + ' concepts, ' + relations.length + ' relations.');
-  console.log('   Identifiants, statuts, prérequis, cycles, types, liens et pages HTML : OK.');
+  console.log('   Champs des concepts, statuts, prérequis, cycles, relations et existence des pages : OK.');
 }

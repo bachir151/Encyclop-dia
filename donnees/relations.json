@@ -34,5 +34,29 @@
     "cible": "graphes",
     "type": "application",
     "explication": "Les topologies de réseau se modélisent avec des graphes."
+  },
+  {
+    "source": "service",
+    "cible": "processus",
+    "type": "prerequis",
+    "explication": "Un service repose sur un ou plusieurs processus pour accomplir son travail."
+  },
+  {
+    "source": "systemd",
+    "cible": "service",
+    "type": "utilise",
+    "explication": "systemd gère des unités de service et leur cycle de vie."
+  },
+  {
+    "source": "systemctl",
+    "cible": "systemd",
+    "type": "utilise",
+    "explication": "systemctl est une interface de commande qui transmet des requêtes à systemd."
+  },
+  {
+    "source": "systemctl",
+    "cible": "service",
+    "type": "application",
+    "explication": "Les commandes systemctl permettent de piloter des unités de service, notamment leur démarrage et leur activation."
   }
 ]

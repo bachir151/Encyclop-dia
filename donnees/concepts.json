@@ -1,0 +1,99 @@
+[
+  {
+    "id": "arp",
+    "titre": "Le protocole ARP",
+    "categorie": "Informatique / Réseaux",
+    "url": "informatique/reseaux/arp/",
+    "resume": "Retrouver l'adresse MAC associée à une IPv4 sur le réseau local.",
+    "statut": "demonstration",
+    "prerequis": [
+      "ipv4",
+      "mac"
+    ],
+    "position": [
+      0,
+      0,
+      0
+    ],
+    "couleur": "#EBB552"
+  },
+  {
+    "id": "ipv4",
+    "titre": "Adresse IPv4",
+    "categorie": "Informatique / Réseaux",
+    "url": null,
+    "resume": "Identifier une interface sur un réseau IP.",
+    "statut": "a_rediger",
+    "prerequis": [],
+    "position": [
+      -2.6,
+      1.3,
+      -0.5
+    ],
+    "couleur": "#9BCDB3"
+  },
+  {
+    "id": "mac",
+    "titre": "Adresse MAC",
+    "categorie": "Informatique / Réseaux",
+    "url": null,
+    "resume": "Identifier une interface dans les échanges de liaison.",
+    "statut": "a_rediger",
+    "prerequis": [],
+    "position": [
+      2.2,
+      1.4,
+      0.5
+    ],
+    "couleur": "#E8B6AC"
+  },
+  {
+    "id": "ethernet",
+    "titre": "Ethernet",
+    "categorie": "Informatique / Réseaux",
+    "url": null,
+    "resume": "Comprendre le transport des trames Ethernet.",
+    "statut": "a_rediger",
+    "prerequis": [
+      "mac"
+    ],
+    "position": [
+      2.8,
+      -1.1,
+      -1.5
+    ],
+    "couleur": "#ACBBDD"
+  },
+  {
+    "id": "routage",
+    "titre": "Routage IP",
+    "categorie": "Informatique / Réseaux",
+    "url": null,
+    "resume": "Acheminer un paquet vers un autre réseau.",
+    "statut": "a_rediger",
+    "prerequis": [
+      "ipv4"
+    ],
+    "position": [
+      -2.5,
+      -1.4,
+      0.8
+    ],
+    "couleur": "#D7B6DE"
+  },
+  {
+    "id": "graphes",
+    "titre": "Théorie des graphes",
+    "categorie": "Mathématiques",
+    "url": null,
+    "resume": "Modéliser des relations avec des sommets et des arêtes.",
+    "statut": "a_rediger",
+    "prerequis": [],
+    "position": [
+      -0.5,
+      -2,
+      2.2
+    ],
+    "couleur": "#B5D6D2"
+  }
+]

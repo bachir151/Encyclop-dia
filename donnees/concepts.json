@@ -95,5 +95,72 @@
       2.2
     ],
     "couleur": "#B5D6D2"
+  },
+  {
+    "id": "processus",
+    "titre": "Processus Linux",
+    "categorie": "Informatique / Systèmes / Linux",
+    "url": null,
+    "resume": "Un programme en cours d'exécution, doté d'un identifiant et de ressources.",
+    "statut": "a_rediger",
+    "prerequis": [],
+    "position": [
+      0.5,
+      -2.5,
+      3.5
+    ],
+    "couleur": "#A3CBB0"
+  },
+  {
+    "id": "service",
+    "titre": "Service Linux",
+    "categorie": "Informatique / Systèmes / Linux",
+    "url": null,
+    "resume": "Une fonction rendue par un ou plusieurs processus, souvent en arrière-plan.",
+    "statut": "a_rediger",
+    "prerequis": [
+      "processus"
+    ],
+    "position": [
+      2,
+      -1.3,
+      3
+    ],
+    "couleur": "#DABFA3"
+  },
+  {
+    "id": "systemd",
+    "titre": "systemd",
+    "categorie": "Informatique / Systèmes / Linux",
+    "url": null,
+    "resume": "Le système d'initialisation et gestionnaire de services de nombreuses distributions Linux.",
+    "statut": "a_rediger",
+    "prerequis": [
+      "service"
+    ],
+    "position": [
+      3.1,
+      0.8,
+      3.2
+    ],
+    "couleur": "#B7C7D5"
+  },
+  {
+    "id": "systemctl",
+    "titre": "systemctl : piloter les services Linux",
+    "categorie": "Informatique / Systèmes / Linux",
+    "url": "informatique/systemes/linux/systemctl/",
+    "resume": "Comprendre qui pilote les services, distinguer start et enable, puis expérimenter et se tester.",
+    "statut": "publie",
+    "prerequis": [
+      "service",
+      "systemd"
+    ],
+    "position": [
+      1.4,
+      1,
+      3.7
+    ],
+    "couleur": "#EBB552"
   }
 ]

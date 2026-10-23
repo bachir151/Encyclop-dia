@@ -20,7 +20,7 @@
   {
     "source": "routage",
     "cible": "ipv4",
-    "type": "prerequis",
+    "type": "utilise",
     "explication": "Les routes IP reposent sur la notion de préfixes IPv4."
   },
   {
@@ -38,7 +38,7 @@
   {
     "source": "service",
     "cible": "processus",
-    "type": "prerequis",
+    "type": "utilise",
     "explication": "Un service repose sur un ou plusieurs processus pour accomplir son travail."
   },
   {
@@ -58,5 +58,11 @@
     "cible": "service",
     "type": "application",
     "explication": "Les commandes systemctl permettent de piloter des unités de service, notamment leur démarrage et leur activation."
+  },
+  {
+    "source": "routage",
+    "cible": "arp",
+    "type": "utilise",
+    "explication": "Sur un réseau local IPv4 utilisant Ethernet, la machine résout par ARP l'adresse MAC du prochain saut (passerelle ou hôte directement joignable)."
   }
 ]

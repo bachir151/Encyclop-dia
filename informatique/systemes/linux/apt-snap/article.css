@@ -1,0 +1,13 @@
+.packages-article .article-main{overflow-wrap:anywhere}
+.packages-article pre{white-space:pre-wrap;background:#eaf0e8;padding:16px;line-height:1.7}
+.packages-article dt{font-weight:700;margin-top:20px}
+.packages-article dd{margin:8px 0 0;line-height:1.8;color:#4b6455}
+.packages-article .sim-stage svg{display:block;max-width:360px;margin:auto}
+.packages-article .sim-stage p{padding:0 12px}
+.packages-article .comparison{overflow-x:auto}
+.packages-article table{border-collapse:collapse;min-width:540px;width:100%;line-height:1.6}
+.packages-article caption{text-align:left;font-weight:700;margin-bottom:12px}
+.packages-article th,.packages-article td{border:1px solid #cad3c9;padding:12px;text-align:left;vertical-align:top}
+.packages-article thead{background:#1c322d;color:#f8f3ee}
+.packages-article .comparison:focus-visible{outline:3px solid #1c322d;outline-offset:2px}
+.packages-article .source-note{font-size:13px;line-height:1.7;color:#4b6455}

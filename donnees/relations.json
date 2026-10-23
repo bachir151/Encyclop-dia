@@ -64,5 +64,23 @@
     "cible": "arp",
     "type": "utilise",
     "explication": "Sur un réseau local IPv4 utilisant Ethernet, la machine résout par ARP l'adresse MAC du prochain saut (passerelle ou hôte directement joignable)."
+  },
+  {
+    "source": "apt-snap",
+    "cible": "systemctl",
+    "type": "contraste",
+    "explication": "APT et Snap installent et mettent à jour des logiciels ; systemctl pilote les unités de systemd. Une installation peut néanmoins déclencher le démarrage d’un service."
+  },
+  {
+    "source": "apt-snap",
+    "cible": "service",
+    "type": "utilise",
+    "explication": "Snap s’appuie sur le service snapd pour gérer les installations, les mises à jour et le confinement des snaps."
+  },
+  {
+    "source": "apt-snap",
+    "cible": "graphes",
+    "type": "application",
+    "explication": "Les dépendances entre paquets se représentent par un graphe orienté : un paquet pointe vers les paquets dont il a besoin. APT tient aussi compte des versions et des conflits."
   }
 ]

@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Comprendre les paquets, APT, ses dépôts et ses échanges réseau, Snap et les différences avec macOS, Windows et Android.">
+  <title>Paquets, APT et Snap : installer un logiciel — Encyclopédia</title>
+  <!-- Adapter les ../../ selon la profondeur du dossier canonique. -->
+  <link rel="stylesheet" href="../../../../moteur/styles.css">
+  <link rel="stylesheet" href="article.css">
+</head>
+<body class="article-body packages-article">
+  <a class="skip" href="#contenu">Aller au contenu</a>
+  <nav class="article-nav" aria-label="Navigation">
+    <a href="../../../../">✳ ENCYCLOPÉDIA</a>
+    <a href="../../../../#explorer">← Retour au graphe</a>
+  </nav>
+  <main class="article-main" id="contenu">
+    <div class="eyebrow">Informatique / Systèmes / Linux · Fondamentaux</div>
+    <h1>Quel problème cherchait-on à résoudre ?</h1>
+    <p class="article-intro">Tu veux installer un lecteur vidéo. Télécharger son programme ne suffit pas toujours : il lui faut des bibliothèques, des réglages et des fichiers associés. Comment obtenir le bon ensemble, le mettre à jour et le supprimer proprement ?</p>
+
+    <section class="lesson-card">
+      <div class="eyebrow">01 · LE PROBLÈME</div>
+      <h2>Télécharger ne suffit pas</h2>
+      <p>Un logiciel réutilise souvent du code fourni par d’autres composants : ses dépendances. Un lecteur et un éditeur vidéo peuvent partager un décodeur, mais doivent accepter sa version. Installer consiste donc à organiser des fichiers et des compatibilités, pas seulement à télécharger.</p>
+      <p><strong>Notre question :</strong> Qui prépare les composants, qui les distribue, qui les installe et qui contrôle leurs accès ?</p>
+    </section>
+
+    <section class="lesson-card">
+      <div class="eyebrow">02 · LES PREMIERS PRINCIPES</div>
+      <h2>Reconstruisons la solution</h2>
+      <ol>
+        <li>Un <strong>paquet logiciel</strong> rassemble des fichiers et des informations : nom, version, architecture, dépendances, parfois scripts d’installation. Il peut contenir une bibliothèque ou de la documentation plutôt qu’une application complète. Ce paquet logiciel ne désigne pas un paquet réseau.</li>
+        <li>Un <strong>dépôt</strong> organise les paquets et leur catalogue. Un serveur rend ces fichiers accessibles ; plusieurs serveurs peuvent distribuer le même dépôt.</li>
+        <li>Un <strong>gestionnaire de paquets</strong> choisit les composants nécessaires et suit leur installation. Sur Debian et Ubuntu, APT organise les paquets <code>.deb</code> et s’appuie sur <code>dpkg</code> pour les installer.</li>
+      </ol>
+      <p><strong>Analogie :</strong> un paquet ressemble à un colis accompagné d’une fiche descriptive. <strong>Limite :</strong> ses dépendances et ses scripts peuvent modifier le système ; ce n’est pas un simple dossier à copier. Une distribution assemble un ensemble cohérent de logiciels. Le noyau Linux n’impose pas APT. Voir les <a href="https://www.debian.org/doc/manuals/debian-handbook/sect.package-meta-information.en.html">métadonnées Debian</a> et la <a href="https://ubuntu.com/server/docs/package-management/">gestion des paquets Ubuntu</a>.</p>
+    </section>
+
+<section class="lesson-card" id="apt"><div class="eyebrow">03 · LE TRAJET D’UNE COMMANDE</div><h2>Comment APT trouve-t-il les paquets ?</h2>
+<p>APT lit les sources configurées dans <code>/etc/apt/sources.list</code> et les fichiers <code>.sources</code> ou <code>.list</code> de <code>/etc/apt/sources.list.d/</code>. Certains fichiers peuvent être absents selon l’installation. Les sources indiquent l’adresse du dépôt et les parties de la distribution à consulter. APT ne recherche pas le logiciel sur tout Internet. <a href="https://manpages.debian.org/trixie/apt/sources.list.5.en.html">Configuration des sources</a>.</p>
+<ol><li><code>sudo apt update</code> récupère ou actualise les catalogues disponibles. Le DNS permet de résoudre le nom du serveur en adresse IP. Dans le cas HTTPS présenté ici, une connexion réseau protégée par TLS transporte les requêtes et réponses HTTP.</li>
+<li>APT vérifie les métadonnées signées du dépôt, puis les empreintes des catalogues. Les informations validées sont conservées localement.</li>
+<li><code>sudo apt install htop</code> consulte ce catalogue et l’état des paquets installés, choisit une version selon sa configuration, résout les dépendances et présente les changements.</li>
+<li>Après confirmation si elle est demandée, APT télécharge les fichiers manquants, contrôle leurs empreintes, puis fait intervenir <code>dpkg</code> pour dépaqueter et configurer.</li></ol>
+<p><strong>Le serveur fournit des fichiers ; ton ordinateur décide du plan d’installation.</strong> APT peut aussi utiliser HTTP, des supports locaux ou des caches. Il ne remplace pas les protocoles réseau par un protocole spécial « APT ». <a href="https://manpages.debian.org/trixie/apt/apt-transport-http.1.en.html">Transport HTTP d’APT</a>.</p>
+<p><code>sudo apt upgrade</code> met à niveau les paquets installés lorsque cela est possible sans en supprimer. <code>sudo</code> donne les droits d’administration. Ces exemples supposent Debian ou Ubuntu et des sources correctement configurées ; aucune commande n’est exécutée par cette page.</p>
+</section><section class="lesson-card"><div class="eyebrow">04 · EXPÉRIMENTER</div><h2>Suivre les échanges, étape par étape</h2>
+<p>Modèle simplifié : un client, un dépôt HTTPS et aucun fichier déjà en cache. Le DNS, les relais et les multiples requêtes sont résumés. Les flèches indiquent le sens des échanges, pas une prise de contrôle à distance.</p>
+<div class="sim-stage" data-stepper>
+<svg viewBox="0 0 360 380" role="img" aria-label="APT sur ton ordinateur échange des demandes et des fichiers avec le serveur du dépôt. Le calcul et l’installation restent locaux.">
+<rect x="25" y="25" width="310" height="80" rx="12" fill="#dcebdc"/><text x="180" y="58" text-anchor="middle" fill="#1c322d" font-size="20">Ton ordinateur</text><text x="180" y="85" text-anchor="middle" fill="#1c322d" font-size="16">APT · catalogue · dpkg</text>
+<rect x="25" y="275" width="310" height="80" rx="12" fill="#f1cdbe"/><text x="180" y="310" text-anchor="middle" fill="#1c322d" font-size="20">Serveur du dépôt</text><text x="180" y="337" text-anchor="middle" fill="#1c322d" font-size="16">Catalogues et fichiers .deb</text>
+<g data-step-panel data-step-min="0"><rect x="25" y="25" width="310" height="80" rx="12" fill="none" stroke="#806025" stroke-width="4"/><text x="180" y="205" text-anchor="middle" fill="#1c322d" font-size="16">Sources locales</text></g><g data-step-panel data-step-min="1" hidden><path d="M110 110 V270 l-9 -14 m9 14 l9 -14" stroke="#806025" stroke-width="4" fill="none"/><text x="180" y="205" text-anchor="middle" fill="#1c322d" font-size="16">Requête de catalogue</text></g><g data-step-panel data-step-min="2" hidden><path d="M250 270 V110 l-9 14 m9 -14 l9 14" stroke="#1c322d" stroke-width="4" fill="none"/><text x="180" y="205" text-anchor="middle" fill="#1c322d" font-size="16">Catalogue reçu</text></g><g data-step-panel data-step-min="3" hidden><rect x="25" y="25" width="310" height="80" rx="12" fill="none" stroke="#806025" stroke-width="4"/><text x="180" y="205" text-anchor="middle" fill="#1c322d" font-size="16">Plan local</text></g><g data-step-panel data-step-min="4" hidden><path d="M110 110 V270 l-9 -14 m9 14 l9 -14" stroke="#806025" stroke-width="4" fill="none"/><text x="180" y="205" text-anchor="middle" fill="#1c322d" font-size="16">Demande de paquets</text></g><g data-step-panel data-step-min="5" hidden><path d="M250 270 V110 l-9 14 m9 -14 l9 14" stroke="#1c322d" stroke-width="4" fill="none"/><text x="180" y="205" text-anchor="middle" fill="#1c322d" font-size="16">Paquets reçus</text></g><g data-step-panel data-step-min="6" hidden><rect x="25" y="25" width="310" height="80" rx="12" fill="none" stroke="#806025" stroke-width="4"/><text x="180" y="205" text-anchor="middle" fill="#1c322d" font-size="16">Installation locale</text></g></svg>
+<p data-step-caption>APT lit les dépôts configurés sur la machine. Aucun logiciel n’est encore téléchargé.</p>
+<ol class="sr-only" data-step-captions><li>APT lit les dépôts configurés sur la machine. Aucun logiciel n’est encore téléchargé.</li><li>apt update contacte le dépôt : résolution DNS, puis requêtes HTTP sur HTTPS dans cet exemple.</li><li>Le dépôt renvoie les métadonnées signées et les catalogues. APT les vérifie avant de les utiliser.</li><li>apt install htop calcule localement les dépendances à partir du catalogue et de l’état installé.</li><li>APT demande les fichiers .deb nécessaires au serveur, après confirmation si elle est demandée.</li><li>Les fichiers .deb reviennent vers le client ; APT vérifie leurs empreintes.</li><li>dpkg dépaquette et configure les paquets. Le serveur n’installe rien à distance.</li></ol>
+<div class="sim-controls"><button type="button" data-step-back>← Précédent</button><button type="button" data-step-next>Suivant →</button><span data-step-status class="sim-status" aria-live="polite">Étape 1 sur 7</span></div>
+</div>
+<p>Observe les étapes 1 et 4 : lire les sources et calculer le plan sont des opérations locales. Les téléchargements du catalogue et des paquets sont deux opérations distinctes. Les explications de chaque étape sont aussi disponibles en texte.</p>
+</section><section class="lesson-card"><div class="eyebrow">05 · DE L’AUTEUR AU DÉPÔT</div><h2>Qui alimente les serveurs ?</h2>
+<ol><li><strong>Les développeurs</strong> produisent le code du logiciel.</li><li><strong>Les mainteneurs de paquets</strong> préparent son intégration à la distribution : recette de construction, dépendances et éventuelles adaptations.</li><li><strong>L’infrastructure de construction et de publication</strong> construit les paquets, applique les contrôles prévus et les intègre à l’archive.</li><li><strong>Les miroirs</strong> recopient cette archive pour répartir les téléchargements. Leur hébergeur n’est pas forcément l’auteur du logiciel.</li></ol>
+<p>Ce parcours décrit le modèle Debian, de façon simplifiée : les procédures exactes varient. Un éditeur peut également exploiter son propre dépôt. Ajouter une source et sa clé introduit une nouvelle relation de confiance. <a href="https://www.debian.org/devel/buildd/">Construction des paquets Debian</a> ; <a href="https://www.debian.org/doc/manuals/developers-reference/resources.en.html">archive et miroirs</a>.</p>
+<h3>Comment faire confiance aux fichiers reçus ?</h3>
+<p>La chaîne de vérification relie une <strong>clé de confiance</strong> à des <strong>métadonnées signées</strong> (souvent <code>InRelease</code>), puis aux <strong>empreintes des catalogues</strong>, puis aux <strong>empreintes des paquets</strong>. Une empreinte est calculée à partir du contenu d’un fichier ; elle permet de vérifier qu’il correspond au contenu annoncé.</p>
+<p>HTTPS protège le transport ; la signature authentifie les métadonnées du dépôt. APT ne vérifie pas, dans ce mécanisme, une signature individuelle de chaque <code>.deb</code>. Une signature valide ne garantit ni l’absence de bug ni la bienveillance du logiciel : elle renvoie à la confiance accordée au responsable du dépôt. <a href="https://manpages.debian.org/trixie/apt/apt-secure.8.en.html">Chaîne de confiance APT</a>.</p>
+</section><section class="lesson-card"><div class="eyebrow">06 · LES LIMITES</div><h2>Que se passe-t-il si le serveur ne répond pas ?</h2>
+<dl><dt>Le DNS échoue</dt><dd>Le nom du serveur ne peut pas être traduit en adresse IP. Ce n’est pas nécessairement une panne du dépôt.</dd>
+<dt>Le serveur est inaccessible ou trop lent</dt><dd>La connexion ou le transfert atteint un délai d’attente. Le nombre de nouvelles tentatives dépend de la configuration.</dd>
+<dt>Un dépôt échoue pendant apt update</dt><dd>Les autres dépôts peuvent être actualisés. APT peut conserver un ancien catalogue et afficher un avertissement : sa connaissance des versions disponibles est alors incomplète.</dd>
+<dt>Un paquet requis ne peut pas être téléchargé</dt><dd>APT ne peut pas terminer normalement l’installation qui en a besoin. Un ancien catalogue peut aussi pointer vers un fichier supprimé du serveur et produire une erreur 404.</dd>
+<dt>Les fichiers nécessaires sont déjà présents localement</dt><dd>Une installation peut parfois se faire hors ligne. Il faut disposer de tous les paquets requis, pas seulement de leur catalogue.</dd>
+<dt>Le dépôt redevient disponible</dt><dd>On peut actualiser le catalogue puis reprendre l’opération. APT ne choisit pas arbitrairement un autre dépôt sur Internet ; la redondance dépend du service et des sources configurées.</dd></dl>
+<p><strong>Les logiciels déjà installés ne disparaissent pas.</strong> Ils continuent normalement à fonctionner, sauf s’ils ont eux-mêmes besoin d’un service en ligne. Une panne pendant le téléchargement et une interruption pendant la configuration locale ne sont pas la même situation ; APT/dpkg ne garantit pas un retour automatique à l’état initial pour toute installation interrompue.</p>
+<p>Lire la première erreur détaillée permet de distinguer réseau, fichier absent et vérification cryptographique. Un échec de signature ne se corrige pas en donnant des permissions à l’application. <a href="https://wiki.debian.org/SourcesList">Exemple d’échec DNS et d’utilisation d’anciens catalogues</a> ; <a href="https://manpages.debian.org/trixie/apt/apt-transport-http.1.en.html">délais réseau</a>.</p>
+</section><section class="lesson-card" id="snap"><div class="eyebrow">07 · UNE AUTRE ORGANISATION</div><h2>Pourquoi Snap existe-t-il ?</h2>
+<p>Partager les bibliothèques facilite la coordination d’une distribution, mais lie les applications aux versions disponibles. Snap distribue une application avec davantage de ses dépendances pour réduire cette dépendance à la distribution. Cela peut dupliquer des composants ; un snap n’embarque pas forcément tout et peut utiliser une base partagée.</p>
+<p>Un <strong>snap</strong> est un paquet ; <code>snap</code> est la commande ; <strong>snapd</strong> est le service qui gère installation, mises à jour et confinement. Ce n’est pas une machine virtuelle : le noyau reste celui de la machine. <a href="https://snapcraft.io/docs/">Documentation Snap</a>.</p>
+<pre><code>sudo snap install vlc
+snap list
+sudo snap refresh</code></pre>
+<p>Ces commandes installent VLC, affichent les snaps installés et demandent leur mise à jour. Les snaps provenant du magasin se mettent normalement à jour automatiquement ; ce comportement peut être contrôlé. <a href="https://snapcraft.io/docs/how-to-guides/manage-snaps/manage-updates/">Gestion des mises à jour Snap</a>.</p>
+<p>La plupart des snaps utilisent un <strong>confinement strict</strong> : leurs accès passent par des interfaces et permissions. Les snaps <code>classic</code> ont un accès comparable à celui d’une application traditionnelle, dans les limites des droits de l’utilisateur. <a href="https://snapcraft.io/docs/explanation/security/snap-confinement/">Niveaux de confinement</a>.</p>
+<p><strong>Cas concret :</strong> VLC démarre mais ne lit pas une vidéo sur une clé USB. Il faut examiner les droits sur la clé et les permissions du snap. <code>apt update</code> actualise un catalogue ; il ne donne pas l’accès à un dossier.</p>
+<p>Installer avec APT ou Snap et piloter un service avec <a href="../systemctl/">systemctl</a> sont des rôles distincts. Ils interagissent : une installation peut démarrer un service et snapd est lui-même un service.</p>
+</section><section class="lesson-card"><div class="eyebrow">08 · COMPARER</div><h2>Et sur macOS, Windows et Android ?</h2>
+<p>Le noyau Linux n’impose pas une manière unique d’installer. Les autres systèmes doivent eux aussi organiser les fichiers, les mises à jour et les accès. Plusieurs approches coexistent dans chaque écosystème.</p>
+<div class="comparison" role="region" aria-label="Comparaison des systèmes, tableau défilable" tabindex="0"><table><caption>Des mécanismes différents pour des besoins communs</caption><thead><tr><th scope="col">Système</th><th scope="col">Distribution et installation</th><th scope="col">Distinction utile</th></tr></thead><tbody>
+<tr><th scope="row">Debian / Ubuntu</th><td>APT gère des paquets .deb ; Snap peut coexister.</td><td>Un paquet peut être une application, une bibliothèque ou un composant système.</td></tr>
+<tr><th scope="row">macOS</th><td>App Store ou téléchargement depuis le Web ; application à copier ou installateur .pkg.</td><td>Un .dmg est une image disque contenant des fichiers, pas nécessairement un installateur.</td></tr>
+<tr><th scope="row">Windows</th><td>Installateurs, Microsoft Store et gestionnaire winget.</td><td>winget peut rechercher, installer et mettre à niveau des applications en lançant leurs installateurs.</td></tr>
+<tr><th scope="row">Android</th><td>Les magasins distribuent des APK. Google Play peut les générer à partir d’un Android App Bundle.</td><td>Le magasin distribue ; Android installe les paquets et isole les applications.</td></tr>
+</tbody></table></div>
+<p>Voir <a href="https://support.apple.com/guide/mac-help/download-apps-mchlgtd_apps01/mac">Apple : distribution des applications</a>, <a href="https://learn.microsoft.com/en-ca/windows/package-manager/winget/">Microsoft : WinGet</a>, <a href="https://developer.android.com/guide/app-bundle">Android : App Bundles et APK</a>.</p>
+<p>Android utilise le noyau Linux mais son organisation des applications est différente de celle d’Ubuntu. Son isolation s’appuie notamment sur des identités distinctes pour les applications. <a href="https://source.android.com/docs/security/app-sandbox">Isolation des applications Android</a>.</p>
+<p><strong>Trois questions à séparer :</strong> où obtenir le logiciel (distribution), quels fichiers mettre en place (installation), à quelles ressources accéder (permissions). Un magasin facilite les deux premières ; le confinement concerne la troisième.</p>
+</section>    <section class="lesson-card quiz">
+      <div class="eyebrow">09 · VÉRIFIER</div>
+      <h2>Ai-je réellement compris ?</h2>
+      <form data-quiz>
+<fieldset data-answer="b" data-explanation="Réponse B : un paquet est une unité de distribution. Ses dépendances peuvent être fournies par d’autres paquets."><legend>1. Un paquet correspond-il nécessairement à une application complète ?</legend><label><input type="radio" name="q1" value="a" required> Oui, chaque paquet ajoute une application au menu.</label><label><input type="radio" name="q1" value="b"> Non, il peut contenir une bibliothèque ou de la documentation.</label><label><input type="radio" name="q1" value="c"> Non, mais il contient toujours toutes ses dépendances.</label></fieldset>
+<fieldset data-answer="a" data-explanation="Réponse A : update rafraîchit les catalogues ; upgrade demande la mise à niveau des paquets installés."><legend>2. Que fait sudo apt update ?</legend><label><input type="radio" name="q2" value="a" required> Il actualise les catalogues des sources configurées.</label><label><input type="radio" name="q2" value="b"> Il met à niveau tous les logiciels installés.</label><label><input type="radio" name="q2" value="c"> Il actualise les permissions des applications.</label></fieldset>
+<fieldset data-answer="c" data-explanation="Réponse C : les serveurs livrent des fichiers. Le client APT résout les dépendances et coordonne dpkg localement."><legend>3. Qui calcule les dépendances pour ton installation ?</legend><label><input type="radio" name="q3" value="a" required> Le miroir, qui configure ensuite ta machine à distance.</label><label><input type="radio" name="q3" value="b"> Le serveur DNS à partir du nom du logiciel.</label><label><input type="radio" name="q3" value="c"> APT sur ta machine, à partir du catalogue et de l’état installé.</label></fieldset>
+<fieldset data-answer="b" data-explanation="Réponse B : le catalogue peut rester ancien ; les logiciels présents ne disparaissent pas. Il faut lire les erreurs."><legend>4. Un dépôt est indisponible pendant apt update. Que peut-il arriver ?</legend><label><input type="radio" name="q4" value="a" required> Les logiciels issus de ce dépôt sont supprimés.</label><label><input type="radio" name="q4" value="b"> APT conserve un ancien catalogue et avertit de l’échec.</label><label><input type="radio" name="q4" value="c"> APT remplace automatiquement le dépôt par tout serveur proposant le même nom de paquet.</label></fieldset>
+<fieldset data-answer="a" data-explanation="Réponse A : les mainteneurs préparent les paquets ; la construction et la publication sont organisées par la distribution. Les miroirs recopient l’archive."><legend>5. Qui prépare généralement l’intégration d’un logiciel dans Debian ?</legend><label><input type="radio" name="q5" value="a" required> Le mainteneur du paquet, avec l’infrastructure de la distribution.</label><label><input type="radio" name="q5" value="b"> Chaque hébergeur de miroir réécrit sa propre version.</label><label><input type="radio" name="q5" value="c"> APT reconstruit le code pour chaque utilisateur.</label></fieldset>
+<fieldset data-answer="c" data-explanation="Réponse C : installation et accès sont distincts. apt update ne modifie pas le confinement ni les droits du dossier."><legend>6. Un snap démarre mais ne peut pas lire une vidéo sur une clé USB. Quelle piste examiner ?</legend><label><input type="radio" name="q6" value="a" required> Le catalogue APT, car il contient les autorisations USB.</label><label><input type="radio" name="q6" value="b"> L’absence de mise à jour du noyau, nécessaire à chaque installation.</label><label><input type="radio" name="q6" value="c"> Les droits d’accès à la clé et les permissions du snap.</label></fieldset>
+<fieldset data-answer="b" data-explanation="Réponse B : l’environnement embarqué réduit certains couplages, mais ne supprime ni le noyau partagé ni les contrôles d’accès."><legend>7. Pourquoi un snap embarque-t-il davantage de dépendances ?</legend><label><input type="radio" name="q7" value="a" required> Pour disposer de son propre noyau Linux.</label><label><input type="radio" name="q7" value="b"> Pour moins dépendre des bibliothèques de la distribution.</label><label><input type="radio" name="q7" value="c"> Pour ne plus avoir besoin de permissions.</label></fieldset>
+<fieldset data-answer="a" data-explanation="Réponse A : Android utilise des APK et son propre système d’installation. Le noyau ne détermine pas le format des applications."><legend>8. Android utilise Linux. Doit-il donc utiliser APT ?</legend><label><input type="radio" name="q8" value="a" required> Non, l’organisation des applications est distincte du noyau.</label><label><input type="radio" name="q8" value="b"> Oui, APT est le composant du noyau chargé des téléchargements.</label><label><input type="radio" name="q8" value="c"> Oui, ses APK sont simplement des paquets .deb renommés.</label></fieldset>
+        <button type="submit">Corriger mes réponses</button>
+        <div class="quiz-result" data-quiz-result aria-live="polite" hidden></div>
+      </form>
+    </section>
+
+    <section class="note">
+      <strong>À retenir :</strong> le paquet organise les fichiers ; le dépôt les distribue ; APT résout les dépendances et coordonne leur installation locale. <code>apt update</code> actualise le catalogue, pas les applications. Snap embarque davantage d’environnement et gère le confinement. Installer un logiciel et autoriser l’accès à une ressource sont deux questions différentes.
+    </section>
+    <section class="lesson-card">
+      <div class="eyebrow">10 · RELIER</div>
+      <h2>Pour continuer</h2>
+      <p>Prérequis : aucun article obligatoire ; les termes nécessaires sont définis ici. Concepts liés : <a href="../systemctl/">systemctl</a> pour piloter les services, <a href="../../../../#explorer">services et théorie des graphes</a> pour comprendre le rôle de snapd et les dépendances.</p>
+      <a href="../../../../#explorer">Explorer ces relations sur le graphe →</a>
+    </section>
+    <p class="source-note">Sources officielles consultées le 23 octobre 2026. Les commandes et exemples sont pédagogiques ; les sources configurées et les versions peuvent varier.</p>
+  </main>
+  <script src="../../../../moteur/lesson.js" defer></script>
+</body>
+</html>

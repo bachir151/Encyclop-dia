@@ -237,5 +237,125 @@
       1.2
     ],
     "couleur": "#B5D6D2"
+  },
+  {
+    "id": "tame",
+    "titre": "L'intelligence sans cerveau ? Le cadre TAME",
+    "categorie": "Sciences / Cognition",
+    "url": "sciences/cognition/tame/",
+    "resume": "Reconstruire la compétence et les buts à partir de la rétroaction, des tissus vivants et des systèmes d'IA ; distinguer preuve, modèle et hypothèse.",
+    "statut": "publie",
+    "prerequis": [],
+    "position": [
+      4.9,
+      2.7,
+      -0.8
+    ],
+    "couleur": "#EBB552"
+  },
+  {
+    "id": "retroaction",
+    "titre": "Rétroaction et régulation",
+    "categorie": "Sciences / Systèmes",
+    "url": null,
+    "resume": "Corriger un écart entre une mesure et une consigne, sans supposer de conscience.",
+    "statut": "a_rediger",
+    "prerequis": [],
+    "position": [
+      3.1,
+      3.9,
+      -0.5
+    ],
+    "couleur": "#A3CBB0"
+  },
+  {
+    "id": "competence",
+    "titre": "Compétence et flexibilité",
+    "categorie": "Sciences / Cognition",
+    "url": null,
+    "resume": "Atteindre une cible malgré des perturbations et par plusieurs chemins.",
+    "statut": "a_rediger",
+    "prerequis": [],
+    "position": [
+      6.5,
+      3.5,
+      -1.3
+    ],
+    "couleur": "#F1CDBE"
+  },
+  {
+    "id": "espace-etats",
+    "titre": "Espaces d'états et attracteurs",
+    "categorie": "Mathématiques / Systèmes dynamiques",
+    "url": null,
+    "resume": "Décrire les configurations d'un système et les trajectoires vers une région cible.",
+    "statut": "a_rediger",
+    "prerequis": [],
+    "position": [
+      6.4,
+      1.5,
+      -0.3
+    ],
+    "couleur": "#B5D6D2"
+  },
+  {
+    "id": "cognition-basale",
+    "titre": "Cognition basale",
+    "categorie": "Sciences / Biologie",
+    "url": null,
+    "resume": "Étudier des compétences de régulation, de mémoire ou d'apprentissage sans présupposer des neurones.",
+    "statut": "a_rediger",
+    "prerequis": [],
+    "position": [
+      4.3,
+      1.1,
+      -2.3
+    ],
+    "couleur": "#9BCDB3"
+  },
+  {
+    "id": "conscience",
+    "titre": "Conscience phénoménale",
+    "categorie": "Philosophie / Esprit",
+    "url": null,
+    "resume": "Question de l'expérience subjective, distincte des compétences mesurées.",
+    "statut": "a_rediger",
+    "prerequis": [],
+    "position": [
+      7.5,
+      2.8,
+      -3
+    ],
+    "couleur": "#D7B6DE"
+  },
+  {
+    "id": "emergence",
+    "titre": "Émergence",
+    "categorie": "Sciences / Philosophie",
+    "url": null,
+    "resume": "Propriétés des ensembles organisés non expliquées par la seule liste de leurs composants.",
+    "statut": "a_rediger",
+    "prerequis": [],
+    "position": [
+      5.1,
+      4.8,
+      -3.1
+    ],
+    "couleur": "#ACBBDD"
+  },
+  {
+    "id": "persuadabilite",
+    "titre": "Axe de persuadabilité",
+    "categorie": "Sciences / Cognition",
+    "url": null,
+    "resume": "Identifier les interventions les plus efficaces pour modifier un comportement.",
+    "statut": "a_rediger",
+    "prerequis": [],
+    "position": [
+      3.2,
+      2.2,
+      -3.6
+    ],
+    "couleur": "#DABFA3"
   }
 ]

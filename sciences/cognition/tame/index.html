@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Michael Levin et le cadre TAME : reconstruire l'intelligence par les premiers principes, de la rétroaction aux planaires, aux LLM et à la conscience.">
+<title>L'intelligence sans cerveau ? Le cadre TAME — Bash World</title>
+<link rel="stylesheet" href="../../../moteur/styles.css">
+<style>
+.article-main{max-width:1030px}.article-main h1{font-size:clamp(38px,5vw,66px)}
+.tame-index{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:25px 0}.tame-index a{padding:13px;background:#1c322d;color:#f8f3ee;font-size:13px;line-height:1.5}
+.tag{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.07em;border-radius:2px;padding:4px 8px;margin-right:4px;background:#e8efe4;color:#315a45}.tag.model{background:#e8e9f4;color:#374969}.tag.reading{background:#fff0d6;color:#725018}.tag.thought{background:#f4e8eb;color:#753e53}
+.tame-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.tame-grid article{background:#f8f3ee;border-left:3px solid #ebb552;padding:16px;line-height:1.6}
+.tame-grid strong{display:block;margin-bottom:7px;color:#1c322d}.tame-grid small{color:#536a5d}.article-main h3{font-size:1.2rem;margin-top:1.7rem}.article-main p,.article-main li{overflow-wrap:anywhere}
+.scroll-table{overflow-x:auto}.comparison{border-collapse:collapse;width:100%;min-width:590px;font-size:.88rem}.comparison th,.comparison td{border-bottom:1px solid #d8dfd4;text-align:left;padding:12px;vertical-align:top;line-height:1.65}.comparison th{background:#1c322d;color:#f8f3ee}
+.callout{background:#f8f3ee;border-left:4px solid #ebb552;padding:18px 21px;line-height:1.7;margin:18px 0}
+.warning{border-left-color:#a95643}.source-list li{margin-bottom:.85rem;line-height:1.55}.source-list a{overflow-wrap:anywhere;text-decoration:underline;text-underline-offset:3px}
+.sim-stage{overflow:hidden}.sim-stage svg text{font-family:Arial,sans-serif}.sim-status{line-height:1.4}.sim-stage svg{max-width:100%}
+.article-nav a:focus-visible,.tame-index a:focus-visible,.source-list a:focus-visible{outline:3px solid #ebb552;outline-offset:3px}
+@media(max-width:680px){.tame-index,.tame-grid{grid-template-columns:1fr}.article-main{padding-inline:18px}.comparison{min-width:540px}.sim-stage{padding:12px 4px}}
+</style>
+</head>
+<body class="article-body">
+<a class="skip" href="#contenu">Aller au contenu</a>
+<nav class="article-nav" aria-label="Navigation"><a href="../../../">✳ BASH WORLD</a><a href="../../../#explorer">← Graphe des connaissances</a></nav>
+<main class="article-main" id="contenu">
+<div class="eyebrow">SCIENCES / COGNITION · PREMIERS PRINCIPES · VERSION 3</div>
+<h1>L'intelligence sans cerveau ?</h1>
+<p class="article-intro">Une planaire privée de sa tête reconstruit une tête. Un têtard dont le visage a été déformé corrige une partie de son anatomie. Un logiciel entraîné peut réparer une image qu'on lui a amputée. Que faut-il observer pour parler d'une <em>compétence</em>, et jusqu'où cette idée permet-elle de parler d'intelligence ?</p>
+<p>Une enquête guidée par le cadre <strong>TAME</strong> (<em>Technological Approach to Mind Everywhere</em>) de Michael Levin, à la croisée de la biologie, de la cybernétique, de la philosophie et de l'intelligence artificielle. Les rapprochements avec Hofstadter et les questions éthiques sont ici présentés comme une reconstruction critique, et non comme des conclusions expérimentales de Levin.</p>
+<nav class="tame-index" aria-label="Parties de l'article"><a href="#principes">I · Reconstruire les principes</a><a href="#vivant">II · Examiner le vivant</a><a href="#machines">III · Interroger les machines</a></nav>
+
+<section class="lesson-card" id="principes">
+<div class="eyebrow">01 · LE PROBLÈME</div><h2>Quel problème cherchait-on à résoudre ?</h2>
+<p>Nous reconnaissons facilement un humain qui déjoue un obstacle pour atteindre son objectif. Nous sommes moins à l'aise lorsqu'un tissu cicatrise, qu'un organisme régénère sa forme ou qu'un programme résout un problème inédit. Dire « ce n'est que de la chimie » ou « ce n'est que du calcul » décrit le matériau, pas encore la capacité observée.</p>
+<p><strong>Question de départ :</strong> peut-on étudier les compétences d'un système sans décider d'abord s'il possède un cerveau, une âme ou une conscience ? TAME est une proposition de méthode pour comparer des agents très différents. L'article fondateur de 2022 est explicitement un article de <em>théorie et hypothèse</em>, non une validation expérimentale générale de toutes ses propositions [1].</p>
+<h3>Premier principe — Une cible et une correction d'écart</h3>
+<p>Un thermostat possède une consigne : 20 °C. Il observe la température, compare cette mesure à la cible et commande le chauffage. Ce comportement orienté vers un résultat peut être expliqué par une <strong>boucle de rétroaction négative</strong>. Il n'exige pas d'invoquer une intention consciente.</p>
+<div class="sim-stage" data-stepper>
+<svg viewBox="0 0 690 210" role="img" aria-label="Thermostat : consigne, mesure et correction d'écart révélées étape par étape.">
+<rect x="15" y="45" width="148" height="72" rx="10" fill="#1c322d"/><text x="89" y="73" fill="#f8f3ee" text-anchor="middle" font-size="17">Consigne</text><text x="89" y="99" fill="#ebb552" text-anchor="middle" font-size="20">20 °C</text>
+<rect x="270" y="45" width="146" height="72" rx="10" fill="#f1cdbe"/><text x="343" y="73" fill="#1c322d" text-anchor="middle" font-size="17">Radiateur</text><text x="343" y="99" fill="#1c322d" text-anchor="middle" font-size="14">agit sur la pièce</text>
+<rect x="525" y="45" width="148" height="72" rx="10" fill="#b8d3bd"/><text x="599" y="73" fill="#1c322d" text-anchor="middle" font-size="17">Pièce</text><text x="599" y="99" fill="#1c322d" text-anchor="middle" font-size="17">18 °C</text>
+<g data-step-panel data-step-min="1" data-step-max="3"><path d="M166 81 H265" fill="none" stroke="#ba8733" stroke-width="4"/><path d="M254 73 L266 81 L254 89" fill="none" stroke="#ba8733" stroke-width="3"/></g>
+<g data-step-panel data-step-min="2" data-step-max="3"><path d="M419 81 H521" fill="none" stroke="#ba8733" stroke-width="4"/><path d="M510 73 L522 81 L510 89" fill="none" stroke="#ba8733" stroke-width="3"/></g>
+<g data-step-panel data-step-min="3"><path d="M599 122 V150 H90 V122" fill="none" stroke="#315a45" stroke-width="3" stroke-dasharray="7 5"/><text x="345" y="143" fill="#315a45" text-anchor="middle" font-size="13">thermomètre : retour d'information</text></g>
+<text x="345" y="190" data-step-caption fill="#1c322d" text-anchor="middle" font-size="14">1. La consigne est 20 °C ; la pièce est à 18 °C.</text>
+</svg>
+<ol class="sr-only" data-step-captions><li>1. La consigne est 20 °C ; la pièce est à 18 °C.</li><li>2. L'écart déclenche une demande de chauffage.</li><li>3. Le chauffage modifie la température de la pièce.</li><li>4. Une nouvelle mesure permet de réduire l'écart.</li></ol>
+<div class="sim-controls"><button type="button" data-step-back>← Précédent</button><button type="button" data-step-next>Suivant →</button><span class="sim-status" data-step-status aria-live="polite">Étape 1 sur 4</span></div>
+</div>
+<h3>Trois sens du mot « but »</h3>
+<div class="tame-grid">
+<article><strong>Attribué</strong>Une rivière « cherche » la mer : c'est notre manière de décrire son écoulement. <small>Pas de cible nécessairement représentée.</small></article>
+<article><strong>Fonctionnel</strong>Une consigne et des mécanismes de correction guident le fonctionnement d'un thermostat ou d'un tissu. <small>On peut les tester par perturbation.</small></article>
+<article><strong>Propre</strong>Le résultat importerait au système lui-même, et non seulement à l'observateur. <small>Cette attribution reste philosophiquement et scientifiquement débattue.</small></article>
+</div>
+<div class="callout"><strong>Frontière essentielle :</strong> constater une régulation ne démontre pas que la cible est vécue ou qu'elle « compte » subjectivement pour le système. Cette distinction accompagne toute la suite.</div>
+<h3>Deuxième principe — L'obstacle révèle la flexibilité</h3>
+<p>William James oppose la limaille attirée par un aimant à Roméo qui cherche Juliette. Interposez un obstacle : la limaille reste bloquée ; Roméo peut contourner le mur. La différence pertinente n'est pas seulement d'avoir une direction, mais de pouvoir employer <strong>des moyens alternatifs</strong>. Levin reprend ce critère comme définition opérationnelle de la compétence, relativement à une tâche et à des perturbations [1].</p>
+<p>Une boucle de rétroaction est donc un point de départ, pas une preuve suffisante d'intelligence. De même, la flexibilité vers un but ne recouvre pas nécessairement toutes les dimensions d'« intelligence » : raisonner, apprendre, comprendre et avoir une expérience vécue sont des questions distinctes.</p>
+<h3>Troisième principe — Un problème n'est pas toujours un trajet dans l'espace</h3>
+<p>Se diriger vers une sortie de labyrinthe, rétablir une glycémie, reformer une tête ou retrouver un profil d'expression génique peuvent tous être décrits comme des trajectoires dans un <strong>espace d'états</strong>. Chaque état correspond à une configuration possible ; une région vers laquelle les trajectoires convergent est un <strong>attracteur</strong>. Cela fournit un langage mathématique commun, sans établir que tous les systèmes emploient le même mécanisme ou disposent du même type d'expérience [2].</p>
+<div class="scroll-table"><table class="comparison"><thead><tr><th>Espace</th><th>État</th><th>Exemple de cible</th></tr></thead><tbody>
+<tr><td>Physique</td><td>Position dans un environnement</td><td>Atteindre la sortie</td></tr>
+<tr><td>Physiologique</td><td>Température, glucose, ions</td><td>Retour à une plage viable</td></tr>
+<tr><td>Anatomique</td><td>Forme et disposition des tissus</td><td>Reformer une structure manquante</td></tr>
+<tr><td>Génique</td><td>Activité de gènes en réseau</td><td>Rejoindre un profil d'expression</td></tr>
+</tbody></table></div>
+<h3>Quatrième principe — La portée des buts : le cône cognitif</h3>
+<p>Levin propose d'imaginer, pour chaque système, l'étendue spatiale et temporelle des événements qu'il peut prendre en compte et chercher à influencer. Une cellule agit plutôt à une échelle locale ; un humain peut poursuivre un projet de plusieurs décennies. C'est le <strong>cône cognitif</strong> : un outil théorique de comparaison des portées de buts, <em>pas</em> une unité de mesure standardisée ni un thermomètre de la conscience [1, 3]. Les tailles et horizons souvent dessinés dans ces diagrammes sont illustratifs.</p>
+<h3>Cinquième principe — Comment peut-on agir sur un système ?</h3>
+<p>Pour modifier une horloge, on change ses pièces. Pour un thermostat, on peut changer la consigne. Un animal peut être entraîné ; un humain peut modifier son comportement à la suite d'un argument. L'<strong>axe de persuadabilité</strong> demande quel type d'intervention est efficace, pour un contexte donné [1].</p>
+<div class="callout"><strong>Attention au mot « persuader » :</strong> suivre une instruction formulée en langage naturel ne prouve pas qu'un système ait changé durablement ses valeurs ou qu'il comprenne les raisons comme le fait une personne.</div>
+</section>
+
+<section class="lesson-card" id="vivant">
+<div class="eyebrow">02 · EXAMINER LE VIVANT</div><h2>Des cellules qui reconstruisent un corps</h2>
+<h3>Les compétences s'emboîtent</h3>
+<p>Molécules, cellules, tissus et organismes forment plusieurs niveaux de régulation. Dans TAME, ces niveaux sont étudiés comme des ensembles potentiellement capables de poursuivre des objectifs à différentes échelles. Il serait pourtant excessif d'affirmer que <em>chaque</em> sous-système biologique est déjà un agent au sens fort : l'attribution doit dépendre de tests précis.</p>
+<h3>La planaire : retrouver une forme</h3>
+<p><span class="tag">OBSERVATION</span> Certains fragments de planaires régénèrent les parties manquantes après amputation. Le résultat varie selon les espèces, la taille et l'emplacement du fragment, ainsi que les conditions expérimentales : « tout fragment, toujours » serait faux. L'ensemble illustre une remarquable régulation de la morphologie. <span class="tag reading">INTERPRÉTATION TAME</span> Levin y voit une navigation flexible dans un espace anatomique, sans que cela établisse la représentation consciente d'une forme.</p>
+<div class="sim-stage" data-stepper>
+<svg viewBox="0 0 690 220" role="img" aria-label="Schéma conceptuel en trois étapes : planaire initiale, amputation, régénération vers une forme globale.">
+<g><rect x="20" y="65" width="190" height="83" rx="41" fill="#a1c9ab" stroke="#1c322d" stroke-width="2"/><circle cx="50" cy="91" r="5" fill="#1c322d"/><circle cx="50" cy="120" r="5" fill="#1c322d"/><text x="115" y="181" fill="#1c322d" text-anchor="middle" font-size="16">Planarie initiale</text></g>
+<g data-step-panel data-step-min="1" data-step-max="2"><path d="M217 104 H268" stroke="#ba8733" stroke-width="4"/><path d="M258 96 L268 104 L258 112" stroke="#ba8733" stroke-width="3" fill="none"/><rect x="295" y="65" width="100" height="83" rx="38" fill="#a1c9ab" stroke="#1c322d" stroke-width="2"/><path d="M295 69 V145" stroke="#a95643" stroke-width="4" stroke-dasharray="5 4"/><text x="345" y="181" fill="#1c322d" text-anchor="middle" font-size="16">Fragment</text></g>
+<g data-step-panel data-step-min="2"><path d="M404 104 H451" stroke="#ba8733" stroke-width="4"/><path d="M441 96 L451 104 L441 112" stroke="#ba8733" stroke-width="3" fill="none"/><rect x="466" y="65" width="194" height="83" rx="40" fill="#a1c9ab" stroke="#1c322d" stroke-width="2"/><circle cx="493" cy="91" r="5" fill="#1c322d"/><circle cx="493" cy="120" r="5" fill="#1c322d"/><path d="M466 72 V141" stroke="#ebb552" stroke-width="4" stroke-dasharray="7 4"/><text x="563" y="181" fill="#1c322d" text-anchor="middle" font-size="16">Forme reconstruite</text></g>
+<text x="345" y="210" data-step-caption fill="#315a45" text-anchor="middle" font-size="13">1. Une planaire possède une polarité tête–queue.</text>
+</svg>
+<ol class="sr-only" data-step-captions><li>1. Une planaire possède une polarité tête–queue.</li><li>2. Une amputation perturbe son organisation anatomique.</li><li>3. Certains fragments reconstruisent les parties absentes.</li></ol>
+<div class="sim-controls"><button type="button" data-step-back>← Précédent</button><button type="button" data-step-next>Suivant →</button><span class="sim-status" data-step-status aria-live="polite">Étape 1 sur 3</span></div>
+</div>
+<p>Ce dessin est une <strong>schématisation</strong>, pas une simulation biologique prédictive. Les signaux qui contrôlent l'orientation et la repousse ne se réduisent pas à la forme extérieure du fragment.</p>
+<h3>Les têtards « Picasso » : une correction réelle, partielle</h3>
+<p><span class="tag">OBSERVATION</span> Dans des expériences sur des têtards de xénope dont le développement craniofacial a été perturbé, des mâchoires et arcs branchiaux fortement déplacés ont évolué vers une morphologie proche des témoins ; les yeux et d'autres structures ne se sont pas tous normalisés complètement [4]. <span class="tag reading">INTERPRÉTATION</span> Cela suggère des mécanismes d'ajustement dépendant de la situation, plutôt qu'une simple succession rigide de mouvements prescrits. Cela n'identifie pas pour autant un « calcul de distance » réalisé explicitement par les tissus.</p>
+<h3>Bioélectricité et mémoire de forme</h3>
+<p>Les cellules non neuronales possèdent elles aussi des potentiels de membrane, liés à leurs canaux ioniques. Les jonctions communicantes permettent des échanges directs entre cellules. Levin explore comment ce couplage participe à la coordination et à la définition de frontières fonctionnelles du collectif [1, 3].</p>
+<p><span class="tag">OBSERVATION</span> Une perturbation transitoire de la signalisation bioélectrique chez certaines planaires peut entraîner des phénotypes à deux têtes qui se maintiennent sur plusieurs cycles de régénération ; des animaux d'apparence normale peuvent aussi conserver un état cryptique révélé par de nouvelles amputations [5]. <span class="tag reading">INTERPRÉTATION TAME</span> Une « consigne de forme » pourrait être codée dans des états de réseau réinscriptibles. L'expérience démontre la persistance observée, non une mémoire infinie ou la localisation exhaustive de cette mémoire.</p>
+<h3>Et le cancer ? Une hypothèse partielle</h3>
+<p><span class="tag">OBSERVATION</span> Des expériences sur des embryons de xénope relient des manipulations du potentiel membranaire à la fréquence de structures tumorales induites par des oncogènes [6]. <span class="tag reading">INTERPRÉTATION TAME</span> Certaines cellules cancéreuses pourraient être pensées comme moins coordonnées avec les objectifs morphologiques du tissu. Mais cette image ne constitue pas une théorie générale du cancer : mutations, microenvironnement, immunité et autres mécanismes restent indispensables.</p>
+<h3>Apprendre sans neurones : quel niveau de preuve ?</h3>
+<p><span class="tag model">MODÈLE COMPUTATIONNEL</span> Biswas et ses collègues ont étudié des réseaux de régulation génique simulés présentant des signatures opérationnelles d'habituation, de sensibilisation ou de conditionnement [7]. Ce résultat montre la possibilité de telles dynamiques dans des modèles ; il ne prouve pas, à lui seul, un conditionnement pavlovien observé dans des cellules vivantes.</p>
+<h3>Les xenobots et anthrobots</h3>
+<p><span class="tag">OBSERVATION</span> Des assemblages de cellules de xénope — xenobots — et des agrégats issus de cellules trachéales humaines — anthrobots — ont présenté des comportements collectifs dans des conditions de laboratoire inédites [8, 9]. Certains xenobots peuvent réunir des cellules libres en amas qui produisent d'autres assemblages, dans des conditions expérimentales spécifiques. Des anthrobots ont favorisé la recolonisation d'une zone lésée dans une culture de neurones <em>in vitro</em> ; ce n'est pas une thérapie nerveuse démontrée chez l'humain.</p>
+<div class="callout warning"><strong>Le garde-fou scientifique :</strong> « comportement organisé », « mémoire », « apprentissage », « intelligence » et « conscience » ne sont pas synonymes. Une étiquette cognitive doit annoncer le protocole et ses limites.</div>
+</section>
+
+<section class="lesson-card" id="machines">
+<div class="eyebrow">03 · DU VIVANT AUX MACHINES</div><h2>La complexité suffit-elle à produire une intelligence ?</h2>
+<h3>Anderson : plusieurs niveaux, plusieurs descriptions</h3>
+<p>Philip Anderson défend en 1972 l'idée que les propriétés d'un niveau d'organisation ne sont pas épuisées par la simple énumération de ses constituants [10]. Cela justifie d'étudier la dynamique d'ensemble, mais ne démontre pas qu'un système complexe poursuive nécessairement des buts. <strong>L'émergence est une question à expliquer, pas une explication qui se suffit à elle-même.</strong></p>
+<h3>Deux architectures idéalisées, pas deux mondes étanches</h3>
+<div class="tame-grid">
+<article><strong>Composition de composants</strong>Une porte logique ne poursuit pas nécessairement un objectif autonome. Plusieurs composants peuvent toutefois former un contrôleur doté de rétroaction.</article>
+<article><strong>Composition de régulateurs</strong>Dans le vivant, des cellules capables de régulations locales contribuent à des fonctions tissulaires. Toutes ne sont pas pour autant des agents autonomes démontrés.</article>
+<article><strong>Architectures mixtes</strong>Les robots et les organismes peuvent réunir boucles locales, commandes centrales et apprentissage. La différence « passif / agent » est une question empirique, pas une frontière de matériau.</article>
+</div>
+<h3>Conway et l'automate neuronal : comparaison instructive</h3>
+<p>Le Jeu de la vie de Conway montre comment des règles locales très simples engendrent des motifs complexes. Un planeur ordinaire est fragile face à de nombreuses perturbations ; toutefois, on peut construire dans ce même univers des structures et mécanismes correcteurs. La conclusion n'est donc pas « Conway ne peut jamais réguler », mais « complexité de motif et robustesse dirigée vers une cible sont deux propriétés distinctes ».</p>
+<p><span class="tag model">MODÈLE COMPUTATIONNEL</span> Dans <em>Growing Neural Cellular Automata</em>, Mordvintsev, Randazzo, Niklasson et Levin entraînent une règle locale neuronale pour faire apparaître un motif cible et le régénérer après certaines lésions [11]. Ici la comparaison avec la planaire porte sur une <em>propriété fonctionnelle</em> — retrouver une configuration après perturbation —, non sur une identité de mécanismes ou d'expérience.</p>
+<div class="sim-stage" data-stepper>
+<svg viewBox="0 0 690 200" role="img" aria-label="Expérience conceptuelle montrant une cible, une perturbation et une récupération conditionnelle d'un automate entraîné.">
+<rect x="20" y="20" width="195" height="128" rx="10" fill="#dce7da"/><rect x="251" y="20" width="195" height="128" rx="10" fill="#dce7da"/><rect x="482" y="20" width="188" height="128" rx="10" fill="#dce7da"/>
+<path d="M76 100 L118 42 L160 100 Z" fill="#315a45"/><text x="118" y="136" text-anchor="middle" fill="#1c322d" font-size="14">Motif cible</text>
+<g data-step-panel data-step-min="1" data-step-max="2"><path d="M307 100 L349 42 L391 100 Z" fill="#315a45"/><rect x="352" y="20" width="65" height="90" fill="#dce7da"/><text x="349" y="136" text-anchor="middle" fill="#1c322d" font-size="14">Lésion</text></g>
+<g data-step-panel data-step-min="2"><path d="M536 100 L578 42 L620 100 Z" fill="#315a45"/><text x="578" y="136" text-anchor="middle" fill="#1c322d" font-size="14">Réparation possible</text></g>
+<text x="345" y="180" text-anchor="middle" data-step-caption fill="#1c322d" font-size="14">1. Une règle locale apprend à faire croître un motif cible.</text>
+</svg>
+<ol class="sr-only" data-step-captions><li>1. Une règle locale apprend à faire croître un motif cible.</li><li>2. On perturbe le motif après sa croissance.</li><li>3. Une règle suffisamment entraînée peut régénérer le motif.</li></ol>
+<div class="sim-controls"><button type="button" data-step-back>← Précédent</button><button type="button" data-step-next>Suivant →</button><span class="sim-status" data-step-status aria-live="polite">Étape 1 sur 3</span></div>
+</div>
+<p><strong>Limite de cette illustration :</strong> les états affichés sont des étapes pédagogiques prédéfinies et non le calcul en temps réel de l'automate. L'article scientifique [11] propose une véritable démonstration interactive.</p>
+<h3>Hofstadter : une boucle étrange n'est pas une preuve tirée de Gödel</h3>
+<p>Dans <em>Gödel, Escher, Bach</em>, Douglas Hofstadter décrit des « symboles actifs » : des motifs collectifs porteurs d'une signification que les composants pris isolément ne portent pas. Dans <em>I Am a Strange Loop</em>, il explore l'hypothèse d'un auto-modèle qui participe au fonctionnement du système qui le produit. Gödel inspire cette analogie de l'autoréférence ; son théorème <strong>ne prouve pas</strong> qu'un système suffisamment compliqué développe un « moi » [12, 13].</p>
+<p>Levin interroge davantage les compétences distribuées et les changements d'échelle d'agents ; Hofstadter s'intéresse à l'organisation symbolique et à l'auto-représentation. Leur rapprochement est fécond, mais demeure ici une <em>synthèse philosophique de l'auteur</em>, pas une théorie commune vérifiée.</p>
+<h3>Les arguments « ce n'est que… »</h3>
+<p>Dire qu'un LLM « ne fait que calculer » ou qu'un cerveau « ne fait que transmettre des ions » ne suffit pas à évaluer ses compétences. Mais l'inverse est également vrai : le fait qu'un mécanisme puisse produire des comportements complexes ne prouve pas une conscience. Il faut tester des capacités définies, chercher des contre-exemples, et distinguer ce que le protocole mesure de ce qu'on y projette.</p>
+<h3>Où placer les systèmes d'IA ? Un profil, pas une étiquette</h3>
+<div class="scroll-table"><table class="comparison"><thead><tr><th>Axe</th><th>Question testable</th><th>Prudence pour les LLM</th></tr></thead><tbody>
+<tr><td>Compétence</td><td>Peut-il atteindre une cible après perturbation ?</td><td>Les performances dépendent des tâches et des tests.</td></tr>
+<tr><td>Espace navigué</td><td>Dans quel domaine atteint-il des états-cibles ?</td><td>Compétences linguistiques et outils éventuels, sans physiologie propre.</td></tr>
+<tr><td>Cône cognitif</td><td>Quelle portée spatio-temporelle de buts lui attribuer ?</td><td>Cadre conceptuel ; buts intrinsèques non établis.</td></tr>
+<tr><td>Persuadabilité</td><td>Quels arguments ou consignes modifient son comportement ?</td><td>Suivre un prompt n'est pas une conviction durable.</td></tr>
+<tr><td>Auto-modèle</td><td>Une représentation de soi intervient-elle causalement dans ses choix ?</td><td>Le pronom « je » ne constitue pas une démonstration.</td></tr>
+<tr><td>Conscience</td><td>Existe-t-il une expérience subjective ?</td><td>Aucune conclusion fournie par les seuls axes précédents.</td></tr>
+</tbody></table></div>
+<h3>Un désaccord majeur : l'énactivisme</h3>
+<p>Pour plusieurs philosophes de l'énactivisme, comme Evan Thompson et Ezequiel Di Paolo, la cognition est liée à l'activité d'un organisme qui doit entretenir sa propre existence : une <em>précarité</em> dans laquelle certains événements sont favorables ou menaçants pour lui [14]. Cette approche conteste que la simple régulation fonctionnelle suffise à fonder un « but propre ». TAME propose d'explorer empiriquement davantage de formes d'agence. Le désaccord ne se dissout pas dans un test unique.</p>
+<h3>Éthique : les capacités ne sont pas automatiquement le vécu</h3>
+<p>Levin propose la <em>synthbiose</em>, une réflexion sur la coexistence avec des intelligences biologiques, artificielles ou hybrides. Il reste indispensable de distinguer compétence et statut moral : savoir qu'un système résout des problèmes ne dit pas directement s'il peut souffrir, avoir des intérêts propres ou éprouver quelque chose. La conscience phénoménale demeure une question ouverte, y compris lorsqu'on dispose d'un excellent inventaire de comportements [1, 15].</p>
+<div class="callout"><strong>Question finale :</strong> à quel moment passe-t-on d'un système qui <em>revient vers une cible</em> à un système <em>pour lequel cette cible compte</em> ? TAME fournit des instruments pour préciser la première question ; il ne clôt pas la seconde.</div>
+</section>
+
+<section class="lesson-card quiz" id="qcm">
+<div class="eyebrow">04 · VÉRIFIER SA COMPRÉHENSION</div><h2>Ai-je réellement compris ?</h2><p>Choisis une réponse par question. Les explications apparaîtront après validation et resteront sur cet appareil.</p>
+<form data-quiz>
+<fieldset data-answer="b" data-explanation="Une consigne et une boucle de correction établissent un but fonctionnel, pas une expérience subjective."><legend>1. Un thermostat maintient sa consigne. Quelle conclusion est justifiée ?</legend>
+<label><input type="radio" name="q1" value="a" required> Il ressent le froid.</label><label><input type="radio" name="q1" value="b"> Il régule une variable autour d'un but fonctionnel.</label><label><input type="radio" name="q1" value="c"> Il sait argumenter.</label></fieldset>
+<fieldset data-answer="c" data-explanation="La flexibilité se teste par perturbation : plusieurs chemins vers un même état-cible."><legend>2. Quel test correspond le mieux au critère de William James ?</legend>
+<label><input type="radio" name="q2" value="a" required> Compter les composants d'un système.</label><label><input type="radio" name="q2" value="b"> Vérifier s'il utilise du silicium.</label><label><input type="radio" name="q2" value="c"> Bloquer le chemin habituel et observer les alternatives.</label></fieldset>
+<fieldset data-answer="a" data-explanation="Le cône cognitif est une représentation de la portée des buts, non une mesure standardisée de conscience."><legend>3. Que représente le cône cognitif ?</legend>
+<label><input type="radio" name="q3" value="a" required> La portée spatio-temporelle des buts, à titre de cadre conceptuel.</label><label><input type="radio" name="q3" value="b"> Le nombre exact de pensées conscientes.</label><label><input type="radio" name="q3" value="c"> La vitesse du processeur.</label></fieldset>
+<fieldset data-answer="b" data-explanation="Dans le cas des réseaux géniques étudiés, l'habituation et le conditionnement étaient obtenus dans des modèles computationnels."><legend>4. Dans l'étude de Biswas et collègues, que montre le conditionnement rapporté ?</legend>
+<label><input type="radio" name="q4" value="a" required> Une conscience moléculaire démontrée.</label><label><input type="radio" name="q4" value="b"> Des signatures d'apprentissage dans des réseaux simulés.</label><label><input type="radio" name="q4" value="c"> Une mémoire humaine sans cerveau.</label></fieldset>
+<fieldset data-answer="c" data-explanation="Le suivi d'instructions est un comportement observable ; la conscience et des valeurs propres exigeraient d'autres arguments."><legend>5. Un LLM obéit à une consigne argumentée. Que sait-on ?</legend>
+<label><input type="radio" name="q5" value="a" required> Il a nécessairement une conscience.</label><label><input type="radio" name="q5" value="b"> Il possède une volonté durable indépendante de sa configuration.</label><label><input type="radio" name="q5" value="c"> Son comportement est sensible au langage, sans que cela tranche la conscience.</label></fieldset>
+<fieldset data-answer="a" data-explanation="Chez le xénope, certaines structures se normalisent beaucoup mieux que d'autres : la correction n'est pas universelle."><legend>6. Que montrent les têtards « Picasso » ?</legend>
+<label><input type="radio" name="q6" value="a" required> Une correction anatomique remarquable mais inégale selon les structures.</label><label><input type="radio" name="q6" value="b"> La régénération parfaite de toute structure.</label><label><input type="radio" name="q6" value="c"> La preuve d'une intention consciente.</label></fieldset>
+<button type="submit">Corriger mes réponses</button><div class="quiz-result" data-quiz-result aria-live="polite" hidden></div>
+</form>
+</section>
+
+<section class="note"><strong>À retenir :</strong> (1) Un but fonctionnel se distingue d'un but qui compterait pour le système. (2) La compétence se teste en perturbant une trajectoire vers une cible. (3) Les espaces de problèmes ne sont pas tous spatiaux. (4) Le cône cognitif et la persuadabilité sont des outils théoriques et méthodologiques, pas des détecteurs de conscience. (5) Les expériences sur le vivant, les simulations et les interprétations philosophiques doivent rester distinguées.</section>
+
+<section class="lesson-card" id="sources">
+<div class="eyebrow">05 · APPROFONDIR</div><h2>Sources primaires et contrepoints</h2>
+<p>Les références donnent accès aux études originales. Les étiquettes dans l'article distinguent observations, simulations et interprétations. L'article est une reconstruction critique : il n'exprime pas nécessairement les conclusions de chaque auteur cité.</p>
+<ol class="source-list">
+<li>[1] Levin, M. (2022). <a href="https://doi.org/10.3389/fnsys.2022.768201">Technological Approach to Mind Everywhere</a>. <em>Frontiers in Systems Neuroscience</em> (hypothèse et théorie).</li>
+<li>[2] Fields, C. &amp; Levin, M. (2022). <a href="https://doi.org/10.3390/e24060819">Competency in Navigating Arbitrary Spaces</a>. <em>Entropy</em>.</li>
+<li>[3] Levin, M. (2019). <a href="https://doi.org/10.3389/fpsyg.2019.02688">The Computational Boundary of a “Self”</a>. <em>Frontiers in Psychology</em>.</li>
+<li>[4] Vandenberg, L. N., Adams, D. S. &amp; Levin, M. (2012). <a href="https://doi.org/10.1002/dvdy.23770">Normalized Shape and Location of Perturbed Craniofacial Structures</a>. <em>Developmental Dynamics</em>.</li>
+<li>[5] Durant, F. et al. (2017). <a href="https://doi.org/10.1016/j.bpj.2017.04.011">Long-Term, Stochastic Editing of Regenerative Anatomy</a>. <em>Biophysical Journal</em>.</li>
+<li>[6] Chernet, B. &amp; Levin, M. (2013). <a href="https://doi.org/10.1242/dmm.010835">Transmembrane voltage potential is an essential cellular parameter for the detection and control of tumor development</a>. <em>Disease Models &amp; Mechanisms</em>.</li>
+<li>[7] Biswas, S. et al. (2021). <a href="https://doi.org/10.1016/j.isci.2021.102131">Gene Regulatory Networks Exhibit Several Kinds of Memory</a>. <em>iScience</em>.</li>
+<li>[8] Kriegman, S. et al. (2020). <a href="https://doi.org/10.1073/pnas.1910837117">A scalable pipeline for designing reconfigurable organisms</a>. <em>PNAS</em>.</li>
+<li>[9] Gumuskaya, G. et al. (2024). <a href="https://doi.org/10.1002/advs.202303575">Motile Living Biobots Self-Construct from Adult Human Somatic Progenitor Seed Cells</a>. <em>Advanced Science</em>.</li>
+<li>[10] Anderson, P. W. (1972). <a href="https://doi.org/10.1126/science.177.4047.393">More Is Different</a>. <em>Science</em>.</li>
+<li>[11] Mordvintsev, A. et al. (2020). <a href="https://distill.pub/2020/growing-ca/">Growing Neural Cellular Automata</a>. <em>Distill</em>, avec expériences interactives.</li>
+<li>[12] Hofstadter, D. (1979). <em>Gödel, Escher, Bach</em>. Basic Books.</li>
+<li>[13] Hofstadter, D. (2007). <em>I Am a Strange Loop</em>. Basic Books.</li>
+<li>[14] Thompson, E. (2007). <em>Mind in Life</em>. Harvard University Press ; Di Paolo, E. et al. (2017), <em>Sensorimotor Life</em>. Oxford University Press.</li>
+<li>[15] Butlin, P. et al. (2023). <a href="https://arxiv.org/abs/2308.08708">Consciousness in Artificial Intelligence: Insights from the Science of Consciousness</a>. Rapport de recherche.</li>
+</ol>
+</section>
+
+<section class="lesson-card">
+<div class="eyebrow">06 · RELIER LES IDÉES</div><h2>Explorer le graphe</h2>
+<p><strong>Prérequis pédagogiques :</strong> aucun article obligatoire ; le thermostat, la régulation et les espaces d'états sont introduits ici. <strong>Concepts connexes :</strong> rétroaction, émergence, cognition basale, conscience, réseaux de régulation, intelligence artificielle et philosophie de l'esprit. Ces relations sont décrites dans le graphe par des liens typés et expliqués ; elles ne constituent pas toutes des prérequis.</p>
+<a class="button gold" href="../../../#explorer">Explorer les liens dans le graphe 3D →</a>
+</section>
+</main>
+<script src="../../../moteur/lesson.js" defer></script>
+</body></html>

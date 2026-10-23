@@ -112,5 +112,71 @@
     "cible": "detachement",
     "type": "application",
     "explication": "L'examen du non-soi vise à dissoudre l'appropriation des phénomènes comme étant 'moi' ou 'miens'."
+  },
+  {
+    "source": "tame",
+    "cible": "retroaction",
+    "type": "utilise",
+    "explication": "La boucle de correction d'erreur constitue le point de départ de la notion de but fonctionnel."
+  },
+  {
+    "source": "tame",
+    "cible": "competence",
+    "type": "utilise",
+    "explication": "La flexibilité vers une cible malgré les perturbations sert de critère opérationnel de compétence."
+  },
+  {
+    "source": "tame",
+    "cible": "espace-etats",
+    "type": "utilise",
+    "explication": "TAME décrit la poursuite des buts comme une navigation dans des espaces de configurations possibles."
+  },
+  {
+    "source": "tame",
+    "cible": "cognition-basale",
+    "type": "application",
+    "explication": "Les phénomènes de régénération et de signalisation non neuronale servent à tester l'approche TAME sur le vivant."
+  },
+  {
+    "source": "tame",
+    "cible": "conscience",
+    "type": "contraste",
+    "explication": "Mesurer la compétence n'établit pas l'existence d'une expérience subjective."
+  },
+  {
+    "source": "tame",
+    "cible": "emergence",
+    "type": "contraste",
+    "explication": "La complexité émergente ne prouve pas, à elle seule, la présence de buts corrigés avec flexibilité."
+  },
+  {
+    "source": "tame",
+    "cible": "persuadabilite",
+    "type": "utilise",
+    "explication": "L'axe compare les modes d'intervention efficaces sur un système selon ses capacités."
+  },
+  {
+    "source": "cognition-basale",
+    "cible": "retroaction",
+    "type": "utilise",
+    "explication": "La régulation de variables physiologiques et de la forme mobilise des boucles de rétroaction."
+  },
+  {
+    "source": "competence",
+    "cible": "espace-etats",
+    "type": "utilise",
+    "explication": "La flexibilité se manifeste par des trajectoires alternatives vers une région cible."
+  },
+  {
+    "source": "persuadabilite",
+    "cible": "competence",
+    "type": "application",
+    "explication": "La stratégie d'intervention dépend notamment des formes de flexibilité observables."
+  },
+  {
+    "source": "emergence",
+    "cible": "graphes",
+    "type": "analogie",
+    "explication": "Comme un graphe dépend des relations entre sommets, les propriétés collectives dépendent de l'organisation des composants."
   }
 ]

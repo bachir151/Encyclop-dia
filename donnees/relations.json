@@ -1,0 +1,38 @@
+[
+  {
+    "source": "arp",
+    "cible": "ipv4",
+    "type": "utilise",
+    "explication": "ARP part d'une IPv4 à résoudre."
+  },
+  {
+    "source": "arp",
+    "cible": "mac",
+    "type": "utilise",
+    "explication": "ARP recherche l'adresse MAC correspondante."
+  },
+  {
+    "source": "arp",
+    "cible": "ethernet",
+    "type": "application",
+    "explication": "Sur Ethernet, les messages ARP circulent dans des trames Ethernet."
+  },
+  {
+    "source": "routage",
+    "cible": "ipv4",
+    "type": "prerequis",
+    "explication": "Les routes IP reposent sur la notion de préfixes IPv4."
+  },
+  {
+    "source": "ethernet",
+    "cible": "mac",
+    "type": "utilise",
+    "explication": "Les trames Ethernet contiennent des adresses MAC."
+  },
+  {
+    "source": "routage",
+    "cible": "graphes",
+    "type": "application",
+    "explication": "Les topologies de réseau se modélisent avec des graphes."
+  }
+]

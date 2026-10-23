@@ -82,5 +82,35 @@
     "cible": "graphes",
     "type": "application",
     "explication": "Les dépendances entre paquets se représentent par un graphe orienté : un paquet pointe vers les paquets dont il a besoin. APT tient aussi compte des versions et des conflits."
+  },
+  {
+    "source": "renoncement-radical",
+    "cible": "ascese",
+    "type": "utilise",
+    "explication": "Les pratiques ascétiques constituent une forme extérieure du renoncement, sans en épuiser la portée intérieure."
+  },
+  {
+    "source": "renoncement-radical",
+    "cible": "detachement",
+    "type": "utilise",
+    "explication": "Le détachement intérieur permet de distinguer le dépouillement spirituel de la simple privation."
+  },
+  {
+    "source": "renoncement-radical",
+    "cible": "non-soi",
+    "type": "contraste",
+    "explication": "Le non-soi bouddhique critique un soi substantiel, tandis que d'autres traditions reconnaissent l'Ātman ou visent une union à Dieu."
+  },
+  {
+    "source": "ascese",
+    "cible": "detachement",
+    "type": "application",
+    "explication": "Une discipline ascétique peut favoriser le détachement, sans le garantir automatiquement."
+  },
+  {
+    "source": "non-soi",
+    "cible": "detachement",
+    "type": "application",
+    "explication": "L'examen du non-soi vise à dissoudre l'appropriation des phénomènes comme étant 'moi' ou 'miens'."
   }
 ]

@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Pourquoi Quarto existe-t-il ? Des documents séparés à Pandoc et R Markdown, reconstruisez la publication multiformat et comparez les alternatives.">
+<title>Quarto : écrire une fois, publier plusieurs fois — Encyclopédia</title>
+<link rel="stylesheet" href="../../../moteur/styles.css">
+<style>
+.article-main .comparison{width:100%;border-collapse:collapse;font-size:.95rem}
+.comparison th,.comparison td{border-bottom:1px solid #b5c0b8;text-align:left;padding:.8rem .55rem;vertical-align:top}
+.comparison th{background:#e4ebe2;color:#1c322d}
+.pipeline-code{white-space:pre-wrap;overflow-wrap:anywhere;background:#1c322d;color:#f8f3ee;border-radius:12px;padding:1.2rem;line-height:1.65}
+.pipeline-code code{color:inherit}
+.two-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1rem}
+.two-cols>div{background:#edf1eb;color:#1c322d;border-radius:12px;padding:1rem}
+.sim-stage svg{max-width:100%;height:auto}
+.article-main a{overflow-wrap:anywhere}
+@media(max-width:600px){.comparison{font-size:.83rem}.comparison th,.comparison td{padding:.55rem .3rem}}
+</style>
+</head>
+<body class="article-body">
+<a class="skip" href="#contenu">Aller au contenu</a>
+<nav class="article-nav" aria-label="Navigation"><a href="../../../">✳ ENCYCLOPÉDIA</a><a href="../../../#explorer">← Graphe des connaissances</a></nav>
+<main class="article-main" id="contenu">
+<div class="eyebrow">INFORMATIQUE / PUBLICATION NUMÉRIQUE · FIRST PRINCIPLES</div>
+<h1>Pourquoi écrire un cours deux fois quand une seule source suffit ?</h1>
+<p class="article-intro">Tu enseignes le protocole ARP. Il te faut une page web pour tes élèves et un PDF A4 à imprimer. Puis tu corriges une erreur. Comment éviter deux modifications, deux versions contradictoires et deux fois plus de travail ? Cette question mène à <strong>Quarto</strong>.</p>
+
+<section class="lesson-card">
+<div class="eyebrow">01 · LE PROBLÈME</div>
+<h2>Quel problème cherchait-on à résoudre ?</h2>
+<p>Imagine trois copies du même cours : <strong>cours.docx</strong>, <strong>cours.pdf</strong> et <strong>cours.html</strong>. Si tu modifies l'explication d'ARP dans Word mais oublies la page web, laquelle est la bonne ? Les formats finissent par diverger.</p>
+<p>Il faut distinguer deux choses : <strong>le savoir</strong> (titres, phrases, exemples, images) et <strong>la forme de diffusion</strong> (écran interactif, papier paginé, diaporama).</p>
+<div class="principle"><strong>Besoin fondamental :</strong> conserver une source de vérité et fabriquer plusieurs présentations reproductibles de son contenu.</div>
+</section>
+
+<section class="lesson-card">
+<div class="eyebrow">02 · AVANT QUARTO</div>
+<h2>Comment faisait-on auparavant ?</h2>
+<p>Il n'y a pas eu un « avant Quarto » unique. Plusieurs solutions coexistaient — et existent toujours.</p>
+<ol>
+<li><strong>Documents indépendants :</strong> Word ou LibreOffice pour les polycopiés, HTML écrit séparément pour le site. Flexible, mais avec un risque de désynchronisation.</li>
+<li><strong>Export depuis un logiciel :</strong> un document bureautique ou LaTeX pouvait produire un PDF ; l'export HTML existait aussi, avec des résultats et des possibilités variables. LaTeX privilégiait historiquement la composition imprimée.</li>
+<li><strong>Pandoc :</strong> conversion entre formats textuels et documentaires à partir d'une source structurée. Une brique essentielle existait donc déjà ; créer un site avec navigation, thème et automatisation demandait davantage d'assemblage.</li>
+<li><strong>R Markdown, bookdown et notebooks Jupyter :</strong> association du texte et du code pour produire des rapports reproductibles, des livres et des résultats calculés. Quarto hérite largement de cette culture.</li>
+</ol>
+<p><strong>Nuance historique :</strong> « écrire une fois, publier en plusieurs formats » est plus ancien que Quarto. Ce dernier ne l'a pas inventé ; il fournit une chaîne de publication cohérente autour de cette idée.</p>
+</section>
+
+<section class="lesson-card">
+<div class="eyebrow">03 · LES PREMIERS PRINCIPES</div>
+<h2>Reconstruisons Quarto</h2>
+<ol>
+<li><strong>Un texte doit décrire sa structure.</strong> Dans Markdown, <code>#</code> marque un titre et <code>-</code> une liste : ce n'est pas une police ou une taille figée.</li>
+<li><strong>Une source peut être transformée.</strong> Un moteur de conversion, notamment Pandoc, interprète cette structure et la traduit vers le format choisi.</li>
+<li><strong>Un projet a besoin de règles communes.</strong> Un thème, des options de PDF, une navigation, des références et des commandes de construction évitent de tout reconfigurer pour chaque chapitre.</li>
+</ol>
+<p><strong>Quarto</strong> est un système libre de publication scientifique et technique qui réunit ces éléments. Il utilise principalement des fichiers <code>.qmd</code> (Quarto Markdown), s'appuie sur Pandoc et peut produire notamment des pages HTML, des PDF, des documents Word, des livres ou des présentations.</p>
+<p>Il peut également exploiter des notebooks et du code exécuté par les moteurs appropriés. <strong>Quarto ne signifie pas automatiquement « code exécuté »</strong> : cette fonction dépend du contenu et de la configuration.</p>
+<div class="principle"><strong>Analogie :</strong> le fichier <code>.qmd</code> est une recette structurée ; Quarto orchestre la cuisine ; Pandoc aide à transformer les ingrédients ; HTML et PDF sont deux présentations du plat. L'analogie simplifie une chaîne technique qui comporte plusieurs moteurs.</div>
+<h3>Un exemple minimal</h3>
+<pre class="pipeline-code"><code>---
+title: "Comprendre ARP"
+format:
+  html: default
+  pdf: default
+---
+
+# Pourquoi ARP ?
+
+Une machine connaît une **adresse IPv4**,
+mais doit trouver l'adresse MAC sur son lien.</code></pre>
+<p>La commande <code>quarto render index.qmd</code> lance le rendu selon les formats configurés. Pour le PDF, Quarto peut recourir à Typst ou à LaTeX selon le format et les options retenus.</p>
+</section>
+
+<section class="lesson-card">
+<div class="eyebrow">04 · SIMULER</div>
+<h2>Suivre une source jusqu'aux sorties</h2>
+<p>Avance dans le schéma : chaque étape révèle un rôle. Les flèches montrent une chaîne de publication simplifiée, pas les processus internes exacts de chaque moteur.</p>
+<div class="sim-stage" data-stepper>
+<svg viewBox="0 0 720 270" role="img" aria-label="Schéma de publication : fichier Quarto à gauche, Quarto et Pandoc au centre, sorties HTML et PDF à droite. Les connexions apparaissent par étapes.">
+<rect x="10" y="58" width="151" height="100" rx="12" fill="#1c322d"/>
+<text x="85" y="96" fill="#f8f3ee" font-size="21" text-anchor="middle">index.qmd</text><text x="85" y="122" fill="#ebb552" font-size="14" text-anchor="middle">source unique</text>
+<rect x="211" y="58" width="172" height="100" rx="12" fill="#ebd7a9"/>
+<text x="297" y="96" fill="#1c322d" font-size="21" text-anchor="middle">Quarto</text><text x="297" y="122" fill="#1c322d" font-size="14" text-anchor="middle">orchestre le rendu</text>
+<rect x="440" y="12" width="267" height="94" rx="12" fill="#b8d3bd"/>
+<text x="574" y="48" fill="#1c322d" font-size="21" text-anchor="middle">HTML</text><text x="574" y="75" fill="#1c322d" font-size="14" text-anchor="middle">page web et interactions</text>
+<rect x="440" y="137" width="267" height="94" rx="12" fill="#e6c3bb"/>
+<text x="574" y="173" fill="#1c322d" font-size="21" text-anchor="middle">PDF</text><text x="574" y="200" fill="#1c322d" font-size="14" text-anchor="middle">mise en page imprimable</text>
+<g data-step-panel data-step-min="1" data-step-max="3"><path d="M165 108 H205" stroke="#ad7e36" stroke-width="5"/><path d="M194 101 l11 7 -11 7" stroke="#ad7e36" stroke-width="3" fill="none"/></g>
+<g data-step-panel data-step-min="2" data-step-max="3"><path d="M388 92 L436 59" stroke="#ad7e36" stroke-width="5"/><path d="M424 59 L436 59 L432 72" stroke="#ad7e36" stroke-width="3" fill="none"/></g>
+<g data-step-panel data-step-min="3"><path d="M388 123 L436 183" stroke="#ad7e36" stroke-width="5"/><path d="M422 178 L436 183 L431 169" stroke="#ad7e36" stroke-width="3" fill="none"/></g>
+<text x="360" y="260" fill="#1c322d" font-size="15" text-anchor="middle" data-step-caption>1. Le cours existe dans un seul fichier.</text>
+</svg>
+<ol class="sr-only" data-step-captions>
+<li>1. Le cours existe dans un seul fichier.</li>
+<li>2. Quarto lit les métadonnées et coordonne la conversion.</li>
+<li>3. Une sortie HTML peut servir de page web.</li>
+<li>4. Une sortie PDF peut être composée pour l'impression.</li>
+</ol>
+<div class="sim-controls"><button type="button" data-step-back>← Précédent</button><button type="button" data-step-next>Suivant →</button><span data-step-status class="sim-status" aria-live="polite">Étape 1 sur 4</span></div>
+</div>
+<p>Un quiz animé en JavaScript peut vivre dans la page HTML, mais ne devient pas magiquement interactif dans un PDF. Il faut alors concevoir un équivalent imprimable, par exemple une question statique suivie de son corrigé.</p>
+</section>
+
+<section class="lesson-card">
+<div class="eyebrow">05 · CHOISIR UN OUTIL</div>
+<h2>Quelles alternatives à Quarto ?</h2>
+<p>Le bon outil dépend du livrable principal : un polycopié, un livre scientifique, une documentation technique ou une application web.</p>
+<div style="overflow-x:auto">
+<table class="comparison">
+<thead><tr><th>Outil</th><th>Particulièrement adapté à</th><th>Compromis</th></tr></thead>
+<tbody>
+<tr><td><strong>Quarto</strong></td><td>Une source pour cours, HTML, PDF, livres et diapositives.</td><td>Il faut maîtriser les formats et la configuration.</td></tr>
+<tr><td><strong>Pandoc</strong></td><td>Convertir des documents entre de nombreux formats.</td><td>Il n'organise pas, à lui seul, tout le site pédagogique.</td></tr>
+<tr><td><strong>R Markdown</strong></td><td>Rapports reproductibles, particulièrement avec R.</td><td>Son écosystème historique est plus centré sur R ; il reste maintenu.</td></tr>
+<tr><td><strong>Jupyter Book / MyST</strong></td><td>Livres scientifiques, notebooks, calculs, références.</td><td>Autre chaîne de publication à apprendre.</td></tr>
+<tr><td><strong>MkDocs / Zensical</strong></td><td>Documentation web en Markdown.</td><td>Le PDF de cours n'est pas leur sortie centrale ; les produits évoluent.</td></tr>
+<tr><td><strong>Sphinx</strong></td><td>Grande documentation technique, API et références croisées.</td><td>Configuration et écosystème d'extensions plus exigeants.</td></tr>
+<tr><td><strong>Astro / Docusaurus</strong></td><td>Sites riches et personnalisés.</td><td>Une chaîne de PDF soignés doit être conçue séparément.</td></tr>
+<tr><td><strong>LaTeX / Typst</strong></td><td>Documents à composition typographique précise.</td><td>Le site HTML complet n'est pas leur mission principale.</td></tr>
+</tbody></table>
+</div>
+<h3>Deux projets, deux choix légitimes</h3>
+<div class="two-cols">
+<div><strong>Un site de cours SNT / BTS CIEL</strong><p>Si le besoin non négociable est « un cours → HTML et PDF A4 », Quarto est un candidat particulièrement pertinent.</p></div>
+<div><strong>Une encyclopédie très interactive</strong><p>Si les expériences JavaScript et un graphe 3D dominent, un site HTML/JavaScript dédié peut être plus souple. Rien n'oblige à utiliser Quarto partout.</p></div>
+</div>
+<p><strong>Attention aux dates :</strong> le paysage des générateurs évolue. Pour comparer des versions et calendriers de maintenance, consulte les sites officiels avant un nouveau projet.</p>
+</section>
+
+<section class="lesson-card">
+<div class="eyebrow">06 · TRANSFÉRER</div>
+<h2>Quand la source unique ne suffit-elle pas ?</h2>
+<p>Si tu veux une simulation de réseau interactive dans le navigateur et une fiche papier, le <em>fond scientifique</em> peut rester identique, mais <em>l'expérience</em> ne peut pas l'être : il faut une version statique du schéma et une consigne imprimable. La source unique facilite la cohérence ; elle ne supprime pas le travail de conception pédagogique.</p>
+<p>Si tu veux seulement un site vitrine dynamique, produire des PDF pour chaque page peut être inutile. Si tu veux uniquement un livre imprimé, Typst ou LaTeX directement peuvent suffire. Quarto n'est donc pas une réponse universelle.</p>
+</section>
+
+<section class="lesson-card quiz">
+<div class="eyebrow">07 · VÉRIFIER</div>
+<h2>QCM : as-tu compris ?</h2>
+<form data-quiz>
+<fieldset data-answer="b" data-explanation="La publication multiformat existait déjà avec Pandoc, R Markdown et d'autres outils. Quarto en unifie les usages.">
+<legend>1. Quarto a-t-il inventé la publication dans plusieurs formats ?</legend>
+<label><input type="radio" name="q1" value="a" required> Oui, aucun outil ne convertissait des documents auparavant.</label>
+<label><input type="radio" name="q1" value="b"> Non, il rassemble et simplifie des pratiques antérieures.</label>
+<label><input type="radio" name="q1" value="c"> Oui, mais uniquement sous Linux.</label>
+</fieldset>
+<fieldset data-answer="c" data-explanation="Le fichier .qmd décrit le contenu et des métadonnées. Quarto gère le rendu ; HTML et PDF sont des sorties.">
+<legend>2. Dans cette chaîne, quel est le rôle de <code>index.qmd</code> ?</legend>
+<label><input type="radio" name="q2" value="a" required> Héberger le site public.</label>
+<label><input type="radio" name="q2" value="b"> Remplacer le moteur PDF.</label>
+<label><input type="radio" name="q2" value="c"> Servir de source structurée commune.</label>
+</fieldset>
+<fieldset data-answer="a" data-explanation="Un document PDF ne reproduit pas automatiquement le JavaScript du navigateur ; une alternative imprimable doit être conçue.">
+<legend>3. Que devient un quiz JavaScript dans la version PDF ?</legend>
+<label><input type="radio" name="q3" value="a" required> Il faut prévoir un équivalent statique adapté.</label>
+<label><input type="radio" name="q3" value="b"> Il reste forcément cliquable.</label>
+<label><input type="radio" name="q3" value="c"> Il empêche toute génération de PDF.</label>
+</fieldset>
+<fieldset data-answer="b" data-explanation="Quarto répond directement au besoin HTML + PDF à partir d'une source ; un framework web peut demander une chaîne PDF distincte.">
+<legend>4. Quel critère favorise Quarto pour un site de cours ?</legend>
+<label><input type="radio" name="q4" value="a" required> Faire obligatoirement du 3D.</label>
+<label><input type="radio" name="q4" value="b"> Produire HTML et PDF A4 depuis une seule source.</label>
+<label><input type="radio" name="q4" value="c"> Éviter complètement Markdown.</label>
+</fieldset>
+<button type="submit">Corriger mes réponses</button><div class="quiz-result" data-quiz-result aria-live="polite" hidden></div>
+</form>
+</section>
+
+<section class="note"><strong>À retenir :</strong> Quarto n'est ni un langage de programmation, ni un hébergeur. C'est un système de publication : une source structurée, des règles de rendu et plusieurs sorties. Pandoc et R Markdown existaient avant lui. Choisis l'outil selon les formats et interactions réellement nécessaires.</section>
+<section class="lesson-card">
+<div class="eyebrow">08 · RELIER</div>
+<h2>Pour continuer</h2>
+<p><strong>Prérequis conseillé :</strong> comprendre la différence entre le contenu d'un document et sa présentation. On peut ensuite explorer <strong>Markdown</strong>, <strong>Pandoc</strong>, les générateurs de sites statiques et les formats HTML/PDF.</p>
+<p><a href="../../../#explorer">Explorer les concepts liés sur le graphe 3D →</a></p>
+<h3>Sources et lectures complémentaires</h3>
+<ul>
+<li><a href="https://quarto.org/docs/authoring/markdown-basics.html">Quarto — Markdown Basics</a> (syntaxe et héritage de Pandoc).</li>
+<li><a href="https://quarto.org/docs/faq/rmarkdown.html">Quarto — FAQ pour les utilisateurs de R Markdown</a> (filiation historique).</li>
+<li><a href="https://quarto.org/docs/reference/formats/">Quarto — Formats pris en charge</a>.</li>
+<li><a href="https://pandoc.org/">Pandoc — documentation officielle</a>.</li>
+<li><a href="https://jupyterbook.org/">Jupyter Book — documentation officielle</a>.</li>
+<li><a href="https://www.sphinx-doc.org/">Sphinx — documentation officielle</a>.</li>
+<li><a href="https://www.mkdocs.org/">MkDocs — documentation officielle</a>.</li>
+</ul>
+<p class="subnote">Article pédagogique ; les analogies et le schéma de pipeline sont volontairement simplifiés. Comparaison revue en octobre 2026.</p>
+</section>
+</main>
+<script src="../../../moteur/lesson.js" defer></script>
+</body>
+</html>

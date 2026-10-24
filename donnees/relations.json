@@ -178,5 +178,29 @@
     "cible": "graphes",
     "type": "analogie",
     "explication": "Comme un graphe dépend des relations entre sommets, les propriétés collectives dépendent de l'organisation des composants."
+  },
+  {
+    "source": "quarto",
+    "cible": "markdown",
+    "type": "utilise",
+    "explication": "Les fichiers .qmd de Quarto emploient une syntaxe Markdown étendue pour structurer le contenu."
+  },
+  {
+    "source": "quarto",
+    "cible": "pandoc",
+    "type": "utilise",
+    "explication": "Quarto s'appuie sur Pandoc pour convertir les documents vers plusieurs formats de sortie."
+  },
+  {
+    "source": "quarto",
+    "cible": "generateur-sites",
+    "type": "contraste",
+    "explication": "Quarto publie des sites mais vise aussi les PDF, documents et présentations ; les générateurs de sites se concentrent sur le Web."
+  },
+  {
+    "source": "pandoc",
+    "cible": "markdown",
+    "type": "utilise",
+    "explication": "Pandoc lit notamment Markdown et traduit sa structure dans d'autres formats documentaires."
   }
 ]

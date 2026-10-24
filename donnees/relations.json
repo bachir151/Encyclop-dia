@@ -202,5 +202,17 @@
     "cible": "markdown",
     "type": "utilise",
     "explication": "Pandoc lit notamment Markdown et traduit sa structure dans d'autres formats documentaires."
+  },
+  {
+    "source": "vlsm-bits",
+    "cible": "ipv4",
+    "type": "utilise",
+    "explication": "Le VLSM sépare les bits de l'adresse IPv4 entre préfixe réseau et partie hôte pour dimensionner les blocs."
+  },
+  {
+    "source": "routage",
+    "cible": "vlsm-bits",
+    "type": "application",
+    "explication": "Le routage s'appuie sur les préfixes CIDR attribués aux réseaux et aux liaisons dans le plan d'adressage VLSM."
   }
 ]

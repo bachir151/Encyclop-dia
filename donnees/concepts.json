@@ -419,5 +419,22 @@
       4.2
     ],
     "couleur": "#F1CDBE"
+  },
+  {
+    "id": "vlsm-bits",
+    "titre": "VLSM : bits empruntés et blocs IPv4",
+    "categorie": "Informatique / Réseaux",
+    "url": "informatique/reseaux/vlsm-bits/",
+    "resume": "Visualiser les 128 blocs /22 d'un /15, les bits empruntés et les combinaisons hôtes avec animation et QCM.",
+    "statut": "publie",
+    "prerequis": [
+      "ipv4"
+    ],
+    "position": [
+      -3.6,
+      0.2,
+      -1.9
+    ],
+    "couleur": "#EBB552"
   }
 ]

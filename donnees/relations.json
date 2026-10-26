@@ -214,5 +214,29 @@
     "cible": "vlsm-bits",
     "type": "application",
     "explication": "Le routage s'appuie sur les préfixes CIDR attribués aux réseaux et aux liaisons dans le plan d'adressage VLSM."
+  },
+  {
+    "source": "rip-ospf",
+    "cible": "routage",
+    "type": "application",
+    "explication": "RIP et OSPF automatisent l'apprentissage des routes vers des réseaux distants."
+  },
+  {
+    "source": "rip-ospf",
+    "cible": "graphes",
+    "type": "utilise",
+    "explication": "OSPF modélise les liaisons et leurs coûts en graphe et utilise SPF (Dijkstra) pour choisir les chemins."
+  },
+  {
+    "source": "rip-ospf",
+    "cible": "vlsm-bits",
+    "type": "utilise",
+    "explication": "Les annonces de réseaux et la configuration des liaisons RIP/OSPF reposent sur les préfixes CIDR, par exemple /30."
+  },
+  {
+    "source": "rip-ospf",
+    "cible": "arp",
+    "type": "utilise",
+    "explication": "Sur Ethernet IPv4, un routeur peut utiliser ARP pour connaître l'adresse MAC du prochain saut retenu par sa route."
   }
 ]

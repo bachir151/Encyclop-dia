@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Comprendre RIP, OSPF, les états de liens, les zones, les coûts et le routage dynamique à partir des premiers principes.">
+<title>RIP et OSPF : comment les routeurs trouvent-ils leur chemin ? — Encyclopédia</title>
+<link rel="stylesheet" href="../../../moteur/styles.css">
+<style>
+.network-svg{width:100%;height:auto;background:#eef1e7;border-radius:12px;margin:1rem 0}
+.network-svg text{font-family:Arial,sans-serif;fill:#1c322d}
+.compare{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem}
+.compare>div,.inset{padding:1rem;border:1px solid #c1cfc2;border-radius:10px;background:#eef2e8}
+.article-main table{border-collapse:collapse;width:100%;display:block;overflow-x:auto;margin:1rem 0}
+.article-main th,.article-main td{padding:.7rem;border:1px solid #b5c8b8;text-align:left;min-width:100px}
+.article-main code,.article-main pre{background:#e9e8dd;padding:.12rem .3rem;border-radius:4px}
+.article-main pre{padding:1rem;overflow-x:auto;white-space:pre}
+.sim-stage{overflow:hidden}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body class="article-body">
+<nav class="article-nav" aria-label="Navigation"><a href="../../../">✳ ENCYCLOPÉDIA</a><a href="../../../#explorer">← Retour au graphe</a></nav>
+<main class="article-main">
+<div class="eyebrow">INFORMATIQUE / RÉSEAUX · PREMIERS PRINCIPES</div>
+<h1>Comment les routeurs trouvent-ils automatiquement leur chemin ?</h1>
+<p class="article-intro">Paris doit envoyer un paquet vers Marseille. Les routeurs ne possèdent pas magiquement une carte de tous les réseaux : comment peuvent-ils l'apprendre, puis s'adapter à une panne ?</p>
+<section class="lesson-card">
+<div class="eyebrow">01 · LE PROBLÈME</div><h2>Quel problème cherchait-on à résoudre ?</h2>
+<p>R1 connaît le LAN Paris (<code>192.168.1.0/24</code>) et ses liaisons directes. R3 connaît le LAN Marseille (<code>192.168.3.0/24</code>). Mais R1 ne connaît pas forcément ce réseau distant. On pourrait écrire chaque route manuellement : dans un réseau changeant, la tâche devient fragile.</p>
+<svg class="network-svg" viewBox="0 0 740 245" role="img" aria-label="PC Paris 192.168.1.10 relié à R1 192.168.1.1 ; liaison R1 R2 10.0.12.0/30 ; LAN Lyon 192.168.2.0/24 sur R2 ; liaison R2 R3 10.0.23.0/30 ; PC Marseille 192.168.3.10 derrière R3.">
+<path d="M88 90H160M230 90H350M420 90H530M600 90H666" stroke="#a67a30" stroke-width="5"/>
+<rect x="8" y="56" width="80" height="67" rx="9" fill="#d8e8da"/><text x="48" y="82" text-anchor="middle" font-size="16">PC Paris</text><text x="48" y="103" text-anchor="middle" font-size="12">.1.10</text>
+<g fill="#f8f3ee" stroke="#1c322d" stroke-width="3"><circle cx="195" cy="90" r="35"/><circle cx="385" cy="90" r="35"/><circle cx="565" cy="90" r="35"/></g>
+<g text-anchor="middle" font-weight="bold" font-size="19"><text x="195" y="97">R1</text><text x="385" y="97">R2</text><text x="565" y="97">R3</text></g>
+<rect x="666" y="56" width="69" height="67" rx="9" fill="#f1cdbe"/><text x="700" y="82" text-anchor="middle" font-size="14">PC</text><text x="700" y="103" text-anchor="middle" font-size="12">.3.10</text>
+<g font-size="13" text-anchor="middle"><text x="290" y="76">10.0.12.0/30</text><text x="475" y="76">10.0.23.0/30</text><text x="195" y="148">Paris</text><text x="385" y="148">Lyon</text><text x="565" y="148">Marseille</text><text x="106" y="183">LAN Paris</text><text x="106" y="203">192.168.1.0/24</text><text x="385" y="183">LAN Lyon</text><text x="385" y="203">192.168.2.0/24</text><text x="640" y="183">LAN Marseille</text><text x="640" y="203">192.168.3.0/24</text></g>
+</svg>
+<p><strong>Deux idées possibles :</strong> demander aux voisins quelles destinations ils connaissent, ou partager une description du réseau pour que chacun calcule ses propres itinéraires. Ce sont les approches de RIP et OSPF.</p>
+</section>
+<section class="lesson-card">
+<div class="eyebrow">02 · RIP</div><h2>Demander le chemin au voisin</h2>
+<p>R3 annonce son LAN Marseille à R2. R2 apprend ce LAN à <strong>1 saut</strong>, puis le réannonce à R1. R1 l'apprend à <strong>2 sauts</strong>. Dans ce calcul, un saut correspond à une progression vers la destination via un routeur. Une route directement connectée n'est pas une route RIP apprise.</p>
+<div class="compare"><div><strong>R3 → Marseille</strong><p>Réseau directement connecté.</p></div><div><strong>R2 → Marseille</strong><p>1 saut RIP, via R3.</p></div><div><strong>R1 → Marseille</strong><p>2 sauts RIP, via R2.</p></div></div>
+<p>RIPv2 est un protocole à <em>vecteur de distance</em> : les voisins échangent périodiquement les destinations et les distances (normalement toutes les 30 s). 15 sauts est le maximum utilisable ; 16 signifie « inaccessible ».</p>
+<p><strong>Limite :</strong> RIP ne regarde pas le débit. Entre un lien direct lent à 10 Mbit/s (1 saut) et deux liens rapides à 1 Gbit/s (2 sauts), il préfère le lien direct.</p>
+</section>
+<section class="lesson-card">
+<div class="eyebrow">03 · OSPF</div><h2>Calculer le meilleur chemin avec une carte</h2>
+<p>OSPF ne se contente pas de demander une distance. Chaque routeur décrit l'état de ses connexions. Les routeurs d'une même zone synchronisent leurs informations de topologie ; chacun calcule ensuite le plus court chemin au sens du <strong>coût OSPF</strong>, à l'aide de Dijkstra (SPF).</p>
+<h3>Qu'est-ce qu'un « état de lien » ?</h3>
+<p>Imagine un service de voirie. Chaque carrefour transmet une fiche : « Je suis R2 ; je suis relié à R1 par telle liaison et à R3 par telle autre ; voici leurs coûts ; voici mes réseaux. » Une fiche ne raconte pas tous les trajets : elle décrit <strong>les liens connus du routeur qui l'émet</strong>. En rassemblant les fiches, on reconstitue une carte.</p>
+<div class="inset"><strong>Exemple pédagogique de fiches (simplifiées)</strong><ul><li>R1 : voisin R2, liaison de coût 1 ; LAN Paris.</li><li>R2 : voisins R1 et R3, coûts 1 et 1 ; LAN Lyon.</li><li>R3 : voisin R2, coût 1 ; LAN Marseille.</li></ul><p>Techniquement, ces informations sont codées dans des <strong>LSA</strong> (annonces d'état de lien), qui contiennent notamment l'identité, des descriptions de liens et des données de fraîcheur. Il existe plusieurs types de LSA : cette fiche est une analogie, pas leur format exact.</p></div>
+<p>Les LSA sont diffusées (<em>flooding</em>) selon les règles de la zone ; les routeurs alimentent une <strong>LSDB</strong>, base des états de liens. Dans une zone correctement synchronisée, ils disposent d'une vision cohérente de sa topologie. Ensuite, chaque routeur exécute localement SPF et remplit sa table de routage. Les tables finales peuvent différer : le meilleur prochain saut dépend du point de départ.</p>
+<h3>Et le coût ?</h3><p>Sur les routeurs Cisco classiques, un coût d'interface peut être fondé sur <code>bande passante de référence / bande passante déclarée</code>, avec une valeur entière minimale de 1. La référence est configurable (historiquement 100 Mbit/s sur de nombreuses plateformes) ; pour différencier des liens Gigabit, on peut la régler de façon cohérente sur les routeurs. Ce n'est <strong>ni une mesure de latence ni une mesure de congestion</strong>.</p>
+<p>Pour une référence d'exemple à 1 000 Mbit/s : 10 Mbit/s → coût 100 ; 100 Mbit/s → coût 10 ; 1 Gbit/s → coût 1. OSPF additionne les coûts des interfaces de sortie empruntées jusqu'à la destination.</p>
+<div class="sim-stage" data-stepper>
+<svg class="network-svg" viewBox="0 0 700 245" role="img" aria-label="Deux chemins entre R1 et R3 : un lien direct lent de coût 100 et un parcours R1 R2 R3 de coût total 2.">
+<path d="M135 175L350 50L565 175" stroke="#698573" stroke-width="7" fill="none"/><path d="M135 175H565" stroke="#b48a47" stroke-width="7" fill="none"/>
+<g data-step-panel data-step-min="1" data-step-max="1"><path d="M135 175H565" stroke="#b03a2e" stroke-width="10"/><text x="350" y="211" text-anchor="middle" font-weight="bold" font-size="18">RIP : 1 saut, lien direct</text></g>
+<g data-step-panel data-step-min="2" data-step-max="2"><path d="M135 175L350 50L565 175" stroke="#268657" stroke-width="11" fill="none"/><text x="350" y="211" text-anchor="middle" font-weight="bold" font-size="18">OSPF : coût 2, via R2</text></g>
+<g fill="#f8f3ee" stroke="#1c322d" stroke-width="3"><circle cx="135" cy="175" r="30"/><circle cx="350" cy="50" r="30"/><circle cx="565" cy="175" r="30"/></g>
+<g font-size="19" text-anchor="middle" font-weight="bold"><text x="135" y="182">R1</text><text x="350" y="57">R2</text><text x="565" y="182">R3</text></g>
+<g font-size="15" text-anchor="middle"><text x="240" y="91">1 Gbit/s</text><text x="465" y="91">1 Gbit/s</text><text x="350" y="160">10 Mbit/s · coût 100</text></g>
+<text x="350" y="237" font-size="12" text-anchor="middle" data-step-caption>Étape 1 : deux chemins sont possibles.</text>
+</svg>
+<ol class="sr-only" data-step-captions><li>Étape 1 : deux chemins sont possibles.</li><li>Étape 2 : RIP préfère le chemin direct à un saut.</li><li>Étape 3 : OSPF préfère les deux liaisons rapides, de coût total 2.</li></ol>
+<div class="sim-controls"><button type="button" data-step-back>← Précédent</button><button type="button" data-step-next>Suivant →</button><span data-step-status class="sim-status" aria-live="polite">Étape 1 sur 3</span></div>
+</div>
+<p><strong>Attention :</strong> le choix réel peut dépendre d'une configuration explicite des coûts et de la route complète jusqu'au préfixe. Les valeurs ci-dessus sont celles d'un exercice contrôlé.</p>
+</section>
+<section class="lesson-card">
+<div class="eyebrow">04 · LES ZONES</div><h2>Pourquoi OSPF découpe-t-il le réseau en zones ?</h2>
+<p>Imagine une ville de 5 carrefours, puis un pays de 5 000 carrefours. Si chaque routeur devait traiter toutes les modifications internes de tout le pays, les calculs et les informations à conserver deviendraient coûteux. On crée donc des <strong>zones (areas)</strong> : chaque zone constitue une frontière pour une grande partie de la diffusion des états de liens détaillés et des calculs SPF.</p>
+<svg class="network-svg" viewBox="0 0 720 245" role="img" aria-label="Zone OSPF 1 avec R1 et R2 ; routeur frontière ABR reliant la zone 1 au backbone area 0 ; autre ABR reliant la zone 0 à la zone 2 avec R5.">
+<rect x="15" y="27" width="219" height="175" rx="16" fill="#dcebdc" stroke="#649476" stroke-width="3"/>
+<rect x="235" y="27" width="248" height="175" rx="16" fill="#f0ddae" stroke="#ad8847" stroke-width="3"/>
+<rect x="485" y="27" width="219" height="175" rx="16" fill="#f1cdbe" stroke="#b8867b" stroke-width="3"/>
+<g text-anchor="middle" font-size="16" font-weight="bold"><text x="120" y="54">Area 1</text><text x="360" y="54">Area 0 — backbone</text><text x="600" y="54">Area 2</text></g>
+<path d="M67 120H180H292H430H548H655" stroke="#4b6c5d" stroke-width="5"/>
+<g fill="#f8f3ee" stroke="#1c322d" stroke-width="3"><circle cx="67" cy="120" r="24"/><circle cx="180" cy="120" r="24"/><circle cx="292" cy="120" r="26"/><circle cx="430" cy="120" r="26"/><circle cx="548" cy="120" r="24"/><circle cx="655" cy="120" r="24"/></g>
+<g text-anchor="middle" font-size="15" font-weight="bold"><text x="67" y="126">R1</text><text x="180" y="126">R2</text><text x="292" y="126">ABR</text><text x="430" y="126">ABR</text><text x="548" y="126">R5</text><text x="655" y="126">R6</text></g>
+<g font-size="12" text-anchor="middle"><text x="292" y="174">Zone 1 ↔ 0</text><text x="430" y="174">Zone 0 ↔ 2</text><text x="360" y="224">Schéma logique : les ABR appartiennent à plusieurs zones.</text></g>
+</svg>
+<p>Une <strong>zone</strong> est un ensemble logique de routeurs et de réseaux OSPF partageant une base topologique pour cette zone. Ce n'est pas nécessairement un site géographique ou un VLAN. Un routeur <strong>ABR</strong> (Area Border Router) possède des interfaces dans plusieurs zones et permet d'échanger des informations de routage <em>inter-zones</em>, notamment sous forme d'annonces résumées de destinations plutôt que de diffuser tous les détails internes.</p>
+<p><strong>Area 0</strong> est la zone centrale, dite <em>backbone</em>. Dans l'architecture OSPF multi-zones ordinaire, les autres zones se raccordent à elle par des ABR. En simplifiant : un routeur de l'Area 1 n'a pas besoin de connaître chaque liaison interne de l'Area 2 pour y envoyer un paquet ; il lui suffit d'apprendre quelles destinations sont accessibles via son ABR. Les règles OSPF autorisent des cas particuliers (par exemple les liens virtuels), non développés ici.</p>
+<div class="inset"><strong>Ce que les zones ne sont pas :</strong> elles ne sont ni un sous-réseau IP, ni un découpage obligatoire par bâtiment, ni une méthode pour accélérer physiquement les liaisons. Elles organisent la diffusion des informations et les calculs.</div>
+</section>
+<section class="lesson-card">
+<div class="eyebrow">05 · TRANSFÉRER</div><h2>Configurer et vérifier sur Cisco</h2>
+<div class="compare"><div><h3>RIPv2 sur R1</h3><pre>router rip
+ version 2
+ no auto-summary
+ network 192.168.1.0
+ network 10.0.0.0</pre><p>Sur IOS RIP classique, <code>network 10.0.0.0</code> sélectionne les interfaces du réseau majeur 10/8, même si leur adresse utilise un masque /30. Les interfaces restent en /30 et RIPv2 annonce les préfixes avec leur masque.</p></div><div><h3>OSPF sur R1</h3><pre>router ospf 1
+ network 192.168.1.0 0.0.0.255 area 0
+ network 10.0.12.0 0.0.0.3 area 0</pre><p>OSPF utilise ici des masques génériques : <code>0.0.0.3</code> correspond au /30. Le processus 1 est local au routeur ; l'identifiant de zone doit correspondre entre voisins sur la liaison.</p></div></div>
+<p>Sur les LAN utilisateurs, <code>passive-interface</code> évite les messages de voisinage sur l'interface tout en conservant l'annonce du réseau connecté. Commandes utiles : <code>show ip route</code>, <code>show ip protocols</code>, <code>show ip ospf neighbor</code>, <code>show ip ospf database</code>. Dans la table, une route RIP porte le code <code>R</code> ; une route OSPF intra-zone, <code>O</code>.</p>
+<table><thead><tr><th>Question</th><th>RIP</th><th>OSPF</th></tr></thead><tbody><tr><td>Que partagent les routeurs ?</td><td>Destinations et distances</td><td>États de liens</td></tr><tr><td>Que minimisent-ils ?</td><td>Nombre de sauts</td><td>Somme des coûts</td></tr><tr><td>Connaissance</td><td>Voisins et routes annoncées</td><td>Topologie de leur zone</td></tr><tr><td>Échelle</td><td>Réseaux modestes (15 sauts max)</td><td>Réseaux hiérarchiques et multi-zones</td></tr></tbody></table>
+</section>
+<section class="lesson-card quiz">
+<div class="eyebrow">06 · VÉRIFIER</div><h2>Ai-je réellement compris ?</h2>
+<form data-quiz>
+<fieldset data-answer="a" data-explanation="RIP privilégie 1 saut, sans évaluer les débits : le lien direct lent peut donc gagner."><legend>1. Deux routes : 1 saut lent ou 2 sauts rapides. Que choisit RIP ?</legend><label><input type="radio" name="q1" value="a" required> Le chemin à 1 saut</label><label><input type="radio" name="q1" value="b"> Le chemin le plus rapide</label><label><input type="radio" name="q1" value="c"> Le moins chargé en temps réel</label></fieldset>
+<fieldset data-answer="b" data-explanation="Une annonce d'état de lien décrit les connexions et informations topologiques d'un routeur. Une LSDB partagée permet ensuite à chaque routeur de calculer ses routes."><legend>2. Une annonce d'état de lien sert principalement à…</legend><label><input type="radio" name="q2" value="a" required> Donner seulement le nombre de sauts</label><label><input type="radio" name="q2" value="b"> Décrire des liens et leur état pour construire une carte</label><label><input type="radio" name="q2" value="c"> Transporter les fichiers des PC</label></fieldset>
+<fieldset data-answer="c" data-explanation="Les zones limitent la portée des détails topologiques ; les ABR échangent des informations de destinations entre zones via le backbone Area 0."><legend>3. Pourquoi créer plusieurs zones OSPF ?</legend><label><input type="radio" name="q3" value="a" required> Pour créer des VLAN automatiquement</label><label><input type="radio" name="q3" value="b"> Pour supprimer la table de routage</label><label><input type="radio" name="q3" value="c"> Pour limiter les détails diffusés et organiser les calculs</label></fieldset>
+<fieldset data-answer="a" data-explanation="2 est inférieur à 100 : OSPF prend le trajet de coût 2 si les deux routes sont comparables vers la même destination."><legend>4. Entre deux chemins OSPF de coûts 100 et 2, quel est le préféré ?</legend><label><input type="radio" name="q4" value="a" required> Coût 2</label><label><input type="radio" name="q4" value="b"> Coût 100</label><label><input type="radio" name="q4" value="c"> Celui ayant le plus de routeurs</label></fieldset>
+<button type="submit">Corriger mes réponses</button><div class="quiz-result" data-quiz-result aria-live="polite" hidden></div>
+</form></section>
+<section class="note"><strong>À retenir :</strong> RIP apprend des distances en sauts auprès de ses voisins. OSPF échange des états de liens, reconstruit une topologie par zone, puis minimise un coût. Les zones OSPF limitent la portée de nombreuses informations détaillées, et l'Area 0 relie normalement les autres zones.</section>
+<section class="lesson-card"><div class="eyebrow">07 · RELIER</div><h2>Pour continuer</h2><p>Prérequis pédagogiques : <strong>adresse IPv4</strong> et <strong>routage IP</strong>. Concepts reliés : <strong>théorie des graphes</strong> (Dijkstra), <strong>VLSM/CIDR</strong> (liaisons /30) et <strong>ARP</strong> (MAC du prochain saut sur Ethernet IPv4).</p><p>Références : <a href="https://www.rfc-editor.org/rfc/rfc2453">RFC 2453 (RIPv2)</a>, <a href="https://www.rfc-editor.org/rfc/rfc2328">RFC 2328 (OSPFv2)</a>.</p><a href="../../../#explorer">Explorer ces relations sur le graphe →</a></section>
+</main><script src="../../../moteur/lesson.js" defer></script>
+</body></html>

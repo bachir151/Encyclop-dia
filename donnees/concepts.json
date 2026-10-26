@@ -436,5 +436,23 @@
       -1.9
     ],
     "couleur": "#EBB552"
+  },
+  {
+    "id": "rip-ospf",
+    "titre": "RIP et OSPF : routage dynamique",
+    "categorie": "Informatique / Réseaux",
+    "url": "informatique/reseaux/rip-ospf/",
+    "resume": "Comprendre les annonces RIP, les états de liens OSPF, les coûts et les zones avec schéma, simulation et QCM.",
+    "statut": "publie",
+    "prerequis": [
+      "ipv4",
+      "routage"
+    ],
+    "position": [
+      -4.5,
+      -2.7,
+      0.4
+    ],
+    "couleur": "#EBB552"
   }
 ]

@@ -238,5 +238,23 @@
     "cible": "arp",
     "type": "utilise",
     "explication": "Sur Ethernet IPv4, un routeur peut utiliser ARP pour connaître l'adresse MAC du prochain saut retenu par sa route."
+  },
+  {
+    "source": "ospf-lsa-lsdb",
+    "cible": "rip-ospf",
+    "type": "application",
+    "explication": "Cette leçon détaille la diffusion des LSA, la synchronisation de la LSDB et le calcul SPF abordés dans la comparaison RIP/OSPF."
+  },
+  {
+    "source": "ospf-lsa-lsdb",
+    "cible": "graphes",
+    "type": "utilise",
+    "explication": "OSPF utilise une représentation des liaisons pondérées et l'algorithme de Dijkstra pour calculer un arbre des plus courts chemins."
+  },
+  {
+    "source": "ospf-lsa-lsdb",
+    "cible": "routage",
+    "type": "application",
+    "explication": "Les chemins calculés par OSPF permettent de remplir la table de routage IP et de réagir à une modification de topologie."
   }
 ]

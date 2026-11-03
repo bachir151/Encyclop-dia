@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Simulation pas à pas : comment OSPF échange les LSA, constitue sa LSDB et recalcule un itinéraire après une panne.">
+<title>OSPF : comment un routeur connaît-il les autres liaisons ? — Encyclopédia</title>
+<link rel="stylesheet" href="../../../moteur/styles.css">
+<style>
+.network{width:100%;height:auto;background:#eef2e8;border-radius:12px}
+.network text{font-family:system-ui,sans-serif;fill:#1c322d}
+.network .edge{stroke:#7a9a86;stroke-width:7;fill:none}
+.network .bad{stroke:#b54f46;stroke-dasharray:9 7}
+.network .good{stroke:#26865e;stroke-width:11;fill:none}
+.network .router{fill:#f8f3ee;stroke:#1c322d;stroke-width:3}
+.network [hidden]{display:none}
+.article-main pre{padding:1rem;background:#e7eadf;overflow-x:auto;border-radius:8px}
+.article-main table{border-collapse:collapse;width:100%;display:block;overflow-x:auto}
+.article-main td,.article-main th{border:1px solid #aebfae;padding:.6rem;text-align:left}
+.inset{padding:1rem;border-radius:10px;background:#e9eee4}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body class="article-body">
+<nav class="article-nav" aria-label="Navigation"><a href="../../../">✳ ENCYCLOPÉDIA</a><a href="../../../#explorer">← Retour au graphe</a></nav>
+<main class="article-main" id="contenu">
+<div class="eyebrow">INFORMATIQUE / RÉSEAUX · BTS CIEL · FIRST PRINCIPLES</div>
+<h1>OSPF : comment R1 connaît-il une liaison qu'il ne voit pas ?</h1>
+<p class="article-intro">R1 doit envoyer un paquet vers un réseau derrière R3. Il voit ses interfaces, mais pas celles des autres routeurs. Comment peut-il comparer deux itinéraires et réagir à une panne ?</p>
+<section class="lesson-card"><div class="eyebrow">01 · LE PROBLÈME</div>
+<h2>Quel problème cherchait-on à résoudre ?</h2>
+<p>Un routeur connaît directement ses propres interfaces, mais il ne peut pas mesurer à distance toutes les liaisons. Pourtant, choisir une route exige de connaître une topologie et un coût. L'idée fondamentale d'OSPF : <strong>chaque routeur décrit ses liaisons, puis partage cette description</strong>.</p>
+<p>Analogie : chaque carrefour envoie sa fiche de voirie. En réunissant les fiches, chacun obtient une carte ; personne n'a besoin de « deviner » la vitesse des autres routes.</p></section>
+<section class="lesson-card"><div class="eyebrow">02 · RECONSTRUIRE</div>
+<h2>De Hello aux LSA, puis à Dijkstra</h2>
+<ol><li><strong>Hello :</strong> les routeurs découvrent et entretiennent leurs voisinages OSPF ; sur les réseaux multiaccès, les rôles DR/BDR peuvent organiser les échanges.</li>
+<li><strong>Coût local :</strong> chaque routeur détermine le coût de ses interfaces (calcul à partir de la bande passante administrative, ou <code>ip ospf cost</code> explicite sous Cisco).</li>
+<li><strong>LSA :</strong> il annonce les descriptions de liens et coûts pertinents. Les LSA sont diffusées selon les règles de la zone.</li>
+<li><strong>LSDB :</strong> les routeurs synchronisés d'une même zone disposent d'une base d'états de liens cohérente.</li>
+<li><strong>SPF / Dijkstra :</strong> chaque routeur calcule, depuis lui-même, le chemin de coût total minimal et installe les routes appropriées.</li></ol>
+<p><strong>Précision :</strong> les LSA ne sont pas des mesures de débit en temps réel. Notre schéma représente une seule zone OSPF et simplifie les différents types de LSA, le réseau de destination et la sélection effective des routes.</p></section>
+<section class="lesson-card"><div class="eyebrow">03 · EXPÉRIMENTER</div>
+<h2>Simulation : les annonces circulent, puis une liaison tombe</h2>
+<p>Hypothèse pédagogique : les coûts des interfaces sont configurés comme indiqués ; le préfixe de destination est derrière R3 et possède le même coût terminal quel que soit le chemin.</p>
+<div class="sim-stage" data-stepper>
+<svg class="network" viewBox="0 0 720 300" role="img" aria-label="Quatre routeurs : R1 vers R2 puis R3, coûts 1 et 10 ; R1 vers R4 puis R3, coûts 1 et 1. Simulation de découverte, diffusion LSA, calcul SPF et panne R4–R3.">
+<path class="edge" d="M115 150L348 55L605 150M115 150L348 248L605 150"/>
+<g data-step-panel data-step-min="2" data-step-max="2"><path class="good" d="M115 150L348 248L605 150"/></g>
+<g data-step-panel data-step-min="3" data-step-max="3"><path class="edge bad" d="M348 248L605 150"/></g>
+<g data-step-panel data-step-min="4" data-step-max="4"><path class="edge bad" d="M348 248L605 150"/><path class="good" d="M115 150L348 55L605 150"/></g>
+<g fill="#1c322d" font-size="16" text-anchor="middle"><text x="202" y="67">Coût 1</text><text x="506" y="67">Coût 10</text><text x="214" y="246">Coût 1</text><text x="506" y="246">Coût 1</text></g>
+<g data-step-panel data-step-min="1" data-step-max="1" font-size="14" text-anchor="middle"><rect x="224" y="122" width="270" height="43" rx="8" fill="#EBB552"/><text x="359" y="149">LSA : liens et coûts annoncés</text></g>
+<g><circle class="router" cx="115" cy="150" r="34"/><circle class="router" cx="348" cy="55" r="34"/><circle class="router" cx="605" cy="150" r="34"/><circle class="router" cx="348" cy="248" r="34"/></g>
+<g fill="#1c322d" font-size="20" font-weight="700" text-anchor="middle"><text x="115" y="157">R1</text><text x="348" y="62">R2</text><text x="605" y="157">R3</text><text x="348" y="255">R4</text></g>
+<text x="360" y="292" font-size="13" text-anchor="middle" data-step-caption>Étape 1 : R1 connaît ses interfaces, mais pas toute la topologie.</text>
+</svg>
+<ol class="sr-only" data-step-captions>
+<li>Étape 1 : R1 connaît ses interfaces, mais pas toute la topologie.</li>
+<li>Étape 2 : des voisins échangent les annonces LSA ; la LSDB représente les liaisons de la zone.</li>
+<li>Étape 3 : SPF choisit R1 → R4 → R3, coût 1 + 1 = 2 (contre 11 via R2).</li>
+<li>Étape 4 : la liaison R4–R3 tombe ; l'état changé est annoncé par de nouvelles LSA.</li>
+<li>Étape 5 : après convergence, SPF choisit R1 → R2 → R3, coût 1 + 10 = 11.</li>
+</ol>
+<div class="sim-controls"><button type="button" data-step-back>← Précédent</button><button type="button" data-step-next>Suivant →</button><span data-step-status class="sim-status" aria-live="polite">Étape 1 sur 5</span></div>
+</div>
+<div class="inset"><strong>Interpréter :</strong> R1 ne reçoit pas l'ordre « passe par R4 ». Il reçoit des données topologiques, calcule ses propres chemins et les recalcule après modification. La convergence prend un certain temps ; elle n'est pas instantanée.</div></section>
+<section class="lesson-card"><div class="eyebrow">04 · SUR CISCO</div>
+<h2>D'où vient le coût de l'interface ?</h2>
+<p>Sur de nombreux IOS classiques, <code>coût = bande passante de référence / bande passante administrative</code> (coût entier au moins égal à 1). La référence historique est 100 Mbit/s. Par exemple : 10 Mbit/s donne un coût de 10 et 100 Mbit/s un coût de 1. Cela ne mesure ni la charge ni le débit instantané.</p>
+<table><thead><tr><th>Commande Cisco IOS</th><th>Ce qu'elle fait</th></tr></thead><tbody>
+<tr><td><code>bandwidth 10000</code> (interface)</td><td>Déclare 10 000 kbit/s pour le calcul des métriques ; ne bride pas physiquement le port.</td></tr>
+<tr><td><code>ip ospf cost 20</code> (interface)</td><td>Impose un coût OSPF explicite et remplace le calcul automatique.</td></tr>
+<tr><td><code>auto-cost reference-bandwidth 1000</code> (processus OSPF)</td><td>Fixe la référence à 1 Gbit/s ; à harmoniser entre routeurs.</td></tr></tbody></table>
+<pre><code>R1# show ip ospf neighbor
+R1# show ip ospf interface
+R1# show ip ospf database
+R1# show ip route ospf</code></pre>
+<p>Ces commandes permettent d'observer les voisins, les coûts, les annonces de la base et les routes finalement installées. La configuration réelle dépend du modèle Cisco et de sa version IOS.</p></section>
+<section class="lesson-card"><div class="eyebrow">05 · TRANSFÉRER</div>
+<h2>Ce que le modèle ne dit pas</h2>
+<p>Le meilleur chemin OSPF n'est pas obligatoirement le chemin au débit réel le plus élevé ni celui ayant le moins de routeurs : OSPF minimise des <strong>coûts administratifs annoncés</strong>. En cas d'égalité de coûts, plusieurs chemins peuvent être utilisés. Les zones OSPF limitent la diffusion de détails topologiques ; un routeur ne possède pas nécessairement les détails internes de toutes les zones.</p></section>
+<section class="lesson-card quiz"><div class="eyebrow">06 · VÉRIFIER</div><h2>QCM corrigé</h2>
+<form data-quiz>
+<fieldset data-answer="b" data-explanation="Les LSA annoncent des informations topologiques, notamment des coûts de liens : R1 ne mesure pas directement les ports de R3."><legend>1. Comment R1 connaît-il le coût de R2–R3 ?</legend><label><input type="radio" name="q1" value="a" required> Il mesure ce débit par ping.</label><label><input type="radio" name="q1" value="b"> Il reçoit les annonces OSPF décrivant les liens.</label><label><input type="radio" name="q1" value="c"> Il le devine selon les adresses IP.</label></fieldset>
+<fieldset data-answer="a" data-explanation="LSDB est la base de données des états de liens ; SPF exploite cette carte pour calculer les routes."><legend>2. Que représente la LSDB ?</legend><label><input type="radio" name="q2" value="a" required> La base topologique des états de liens.</label><label><input type="radio" name="q2" value="b"> La table ARP des hôtes.</label><label><input type="radio" name="q2" value="c"> Un test de débit en temps réel.</label></fieldset>
+<fieldset data-answer="c" data-explanation="Après annonce du changement et convergence SPF, l'itinéraire de coût 11 via R2 est l'alternative disponible."><legend>3. R4–R3 tombe : que fait OSPF après convergence ?</legend><label><input type="radio" name="q3" value="a" required> Il conserve forcément la route de coût 2.</label><label><input type="radio" name="q3" value="b"> Il arrête définitivement le routage.</label><label><input type="radio" name="q3" value="c"> Il peut recalculer le chemin via R2.</label></fieldset>
+<fieldset data-answer="b" data-explanation="La commande bandwidth informe certains protocoles de routage mais ne limite pas physiquement le débit."><legend>4. Que fait bandwidth 10000 sur une interface Cisco ?</legend><label><input type="radio" name="q4" value="a" required> Elle réduit physiquement le débit maximal à 10 Mbit/s.</label><label><input type="radio" name="q4" value="b"> Elle déclare une valeur administrative de 10 Mbit/s.</label><label><input type="radio" name="q4" value="c"> Elle désactive OSPF.</label></fieldset>
+<button type="submit">Corriger mes réponses</button><div class="quiz-result" data-quiz-result aria-live="polite" hidden></div></form>
+</section>
+<section class="note"><strong>À retenir :</strong> Hello → voisins ; LSA → descriptions des liens et coûts ; LSDB → carte de la zone ; SPF (Dijkstra) → route de coût minimal ; changement de lien → nouvelles annonces et nouveau calcul.</section>
+<section class="lesson-card"><div class="eyebrow">07 · RELIER</div><h2>Pour continuer</h2><p>Prérequis : <strong>IPv4</strong> et <strong>routage IP</strong>. Voir aussi <a href="../rip-ospf/">RIP et OSPF, vue d'ensemble</a>, la théorie des graphes (Dijkstra), le VLSM et ARP pour la résolution de l'adresse MAC du prochain saut.</p><p>Références : <a href="https://www.rfc-editor.org/rfc/rfc2328">RFC 2328 (OSPFv2)</a> · <a href="https://www.cisco.com/c/en/us/support/docs/ip/open-shortest-path-first-ospf/9237-9.html">Cisco OSPF FAQ</a>.</p><a href="../../../#explorer">Voir ces liens dans le graphe 3D →</a></section>
+</main><script src="../../../moteur/lesson.js" defer></script>
+</body></html>

@@ -454,5 +454,23 @@
       0.4
     ],
     "couleur": "#EBB552"
+  },
+  {
+    "id": "ospf-lsa-lsdb",
+    "titre": "OSPF : LSA, LSDB et recalcul des routes",
+    "categorie": "Informatique / Réseaux",
+    "url": "informatique/reseaux/ospf-lsa-lsdb/",
+    "resume": "Comprendre comment les annonces d'état de liens construisent la carte OSPF et permettent de recalculer les routes après une panne.",
+    "statut": "publie",
+    "prerequis": [
+      "ipv4",
+      "routage"
+    ],
+    "position": [
+      -4.3,
+      -2.9,
+      2.2
+    ],
+    "couleur": "#EBB552"
   }
 ]

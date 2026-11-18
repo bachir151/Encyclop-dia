@@ -487,5 +487,22 @@
       2.1
     ],
     "couleur": "#EBB552"
+  },
+  {
+    "id": "laboratoire-arp",
+    "titre": "Laboratoire ARP : 4 TP de cybersécurité",
+    "categorie": "Informatique / Réseaux / Cybersécurité",
+    "url": "informatique/reseaux/laboratoire-arp/",
+    "resume": "Expérimenter ARP, l'usurpation contrôlée, HTTP/HTTPS et les contre-mesures sur un réseau isolé.",
+    "statut": "publie",
+    "prerequis": [
+      "arp"
+    ],
+    "position": [
+      -0.5,
+      -1.9,
+      -1.3
+    ],
+    "couleur": "#EBB552"
   }
 ]

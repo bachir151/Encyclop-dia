@@ -280,5 +280,11 @@
     "cible": "ipv4",
     "type": "utilise",
     "explication": "Le PC Windows et le serveur Ubuntu utilisent des adresses IPv4 distinctes pour communiquer sur le réseau de la maquette."
+  },
+  {
+    "source": "laboratoire-arp",
+    "cible": "arp",
+    "type": "application",
+    "explication": "Les TP mettent en pratique la résolution IPv4–MAC, les fausses annonces ARP et leurs protections sur un réseau local isolé."
   }
 ]

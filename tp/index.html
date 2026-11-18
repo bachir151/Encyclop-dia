@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#1C322D">
+<meta name="description" content="Travaux pratiques Bash World : communiquer en Ethernet sans adresse IP, avec Python sous Linux.">
+<title>TP pratiques — Ethernet sans adresse IP | Bash World</title>
+<style>
+:root{color-scheme:light;--forest:#1C322D;--cream:#F8F3EE;--gold:#EBB552;--rose:#F1CDBE}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--cream);color:var(--forest);font:16px/1.68 system-ui,-apple-system,Segoe UI,sans-serif}
+a{color:#155c54}a:focus-visible,button:focus-visible{outline:3px solid #bf7d0b;outline-offset:3px}
+header{background:var(--forest);color:var(--cream);padding:1rem max(1.1rem,calc((100vw - 1050px)/2))}
+header a{color:var(--cream);text-decoration:none}header nav{display:flex;gap:1.5rem;flex-wrap:wrap}
+main{max-width:1050px;margin:auto;padding:2.5rem 1.1rem 5rem}
+.kicker{text-transform:uppercase;letter-spacing:.16em;font-size:.78rem;font-weight:700;color:#6b4d12}
+h1{font-size:clamp(2rem,5vw,3.7rem);line-height:1.13;letter-spacing:-.035em;margin:.4rem 0 1rem}h2{font-size:1.65rem;margin:2.6rem 0 .8rem}h3{font-size:1.17rem;margin-top:1.7rem}
+.lead{font-size:1.22rem;max-width:760px}.meta{display:flex;gap:.7rem;flex-wrap:wrap;margin:1.5rem 0}
+.meta span{border:1px solid #b7c9bf;border-radius:50px;padding:.22rem .85rem;font-size:.86rem}
+.card{border:1px solid #d7ded6;background:#fffdf9;border-radius:15px;padding:1.3rem 1.5rem;margin:1.1rem 0}
+.note{border-left:5px solid var(--gold)}.warning{border-left:5px solid #bd6a46}
+pre{overflow:auto;background:#152a26;color:#f6f3ea;border-radius:12px;padding:1.1rem;font-size:.86rem;line-height:1.5}
+code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}p code,li code{background:#e2e8e3;border-radius:4px;padding:.1rem .35rem}
+table{border-collapse:collapse;width:100%}td,th{padding:.65rem;text-align:left;border-bottom:1px solid #d3ddd7}th{background:#e5ede7}
+.button{display:inline-block;padding:.7rem 1rem;background:var(--forest);color:white;border-radius:8px;text-decoration:none;font-weight:700}
+.diagram{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:1rem;margin:2rem 0}.machine{border:2px solid #86a99b;background:#fff;padding:1rem;border-radius:12px;text-align:center;min-width:170px}
+.wire{font-weight:800;color:#41745c}details{padding:.8rem 1rem;border:1px solid #cad8cd;border-radius:10px;margin:.7rem 0;background:#fff}summary{cursor:pointer;font-weight:700}
+footer{background:var(--forest);color:var(--cream);padding:1.6rem;text-align:center}
+footer a{color:var(--cream)}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<header><nav aria-label="Navigation"><a href="../../">✳ Encyclopédia / Bash World</a><a href="#catalogue">TP pratiques</a><a href="#procedure">Manipulations</a><a href="#questions">Questions</a></nav></header>
+<main id="catalogue">
+<div class="kicker">Bash World · Espace TP pratiques · Réseaux</div>
+<h1>Communiquer en Ethernet <em>sans adresse IP</em></h1>
+<p class="lead">Peut-on transmettre un message entre deux PC en utilisant uniquement leurs adresses MAC ? Ce TP permet de le prouver sur un réseau isolé avec Linux et Python.</p>
+<div class="meta"><span>BTS CIEL IR</span><span>Durée : 1 h 30 à 2 h</span><span>Linux · Python 3 · Wireshark</span><span>TP n° 01</span></div>
+<div class="card note"><strong>Objectif :</strong> construire et observer une trame Ethernet de type expérimental <code>0x88B5</code>, sans en-tête IPv4 ou IPv6. Les étudiants distinguent la couche liaison (MAC, Ethernet) et la couche réseau (IP).</div>
+<h2>1. Quel problème cherche-t-on à résoudre ?</h2>
+<p>Deux équipements industriels reliés au même switch doivent échanger un petit message. Aucun serveur DHCP n'est présent et aucune adresse IP n'est configurée. Un programme classique utilisant TCP/IP ne convient pas : nous allons manipuler directement les trames Ethernet.</p>
+<div class="diagram" role="img" aria-label="PC A connecté par Ethernet au PC B ; aucun des deux ne possède d'adresse IP">
+<div class="machine"><strong>PC A</strong><br>MAC A<br>Pas d'IP</div><div class="wire">⟷ Ethernet ⟷</div><div class="machine"><strong>PC B</strong><br>MAC B<br>Pas d'IP</div>
+</div>
+<h2>2. Matériel et précautions</h2>
+<ul><li>Deux PC Ubuntu/Debian avec une interface Ethernet et Python 3.</li><li>Un câble Ethernet entre les PC, ou deux câbles et un switch dans le <strong>même VLAN</strong>.</li><li>Wireshark ou <code>tcpdump</code> pour observer les trames.</li><li>Accès administrateur local ; travailler sur un réseau de TP isolé, jamais sur l'interface utilisée pour une connexion SSH.</li></ul>
+<h2 id="procedure">3. Manipulations</h2>
+<h3>Étape A — Identifier l'interface et les adresses MAC</h3>
+<p>Sur les deux PC, lancer :</p><pre><code>ip link show</code></pre>
+<p>Noter les deux adresses MAC réelles. Dans les commandes suivantes, <code>enp2s0</code> est un <strong>exemple</strong> à remplacer.</p>
+<h3>Étape B — Désactiver la configuration IP sur l'interface du TP</h3>
+<p>Exécuter sur chaque machine :</p>
+<pre><code>sudo nmcli device set enp2s0 managed no
+sudo sysctl -w net.ipv6.conf.enp2s0.disable_ipv6=1
+sudo ip addr flush dev enp2s0
+sudo ip link set enp2s0 up
+ip addr show dev enp2s0</code></pre>
+<div class="card warning"><strong>Vérification impérative :</strong> l'interface utilisée ne doit afficher ni <code>inet</code> ni <code>inet6</code>. Cette manipulation interrompt ses connexions IP. Ne pas utiliser la carte du TP pour conserver une session distante.</div>
+<h3>Étape C — Créer notre protocole Ethernet expérimental</h3>
+<p>Créer le fichier <code>ethernet.py</code> <strong>sur les deux PC</strong>. Le type <code>0x88B5</code> est réservé à des expérimentations locales. Une longueur explicite permet d'ignorer le bourrage éventuel d'Ethernet.</p>
+<pre><code>import argparse
+import socket
+import struct
+
+TYPE = 0x88B5
+
+def mac_bytes(mac):
+    return bytes.fromhex(mac.replace(":", ""))
+
+def mac_str(raw):
+    return ":".join(f"{b:02x}" for b in raw)
+
+def mac_locale(iface):
+    with open(f"/sys/class/net/{iface}/address") as fichier:
+        return mac_bytes(fichier.read().strip())
+
+def envoyer(iface, destinataire, texte):
+    contenu = texte.encode("utf-8")
+    if len(contenu) &gt; 1500 - 2:
+        raise ValueError("Message trop long")
+    paquet = struct.pack("!H", len(contenu)) + contenu
+    trame = (mac_bytes(destinataire) +
+             mac_locale(iface) +
+             struct.pack("!H", TYPE) + paquet)
+
+    with socket.socket(socket.AF_PACKET, socket.SOCK_RAW,
+                       socket.htons(TYPE)) as s:
+        s.bind((iface, 0))
+        s.send(trame)
+    print("Envoyé :", texte)
+
+def recevoir(iface):
+    with socket.socket(socket.AF_PACKET, socket.SOCK_RAW,
+                       socket.htons(TYPE)) as s:
+        s.bind((iface, 0))
+        print("En attente d'une trame...")
+        while True:
+            trame, infos = s.recvfrom(65535)
+            if infos[2] == socket.PACKET_OUTGOING:
+                continue
+            if len(trame) &lt; 16:
+                continue
+            if struct.unpack("!H", trame[12:14])[0] != TYPE:
+                continue
+            longueur = struct.unpack("!H", trame[14:16])[0]
+            message = trame[16:16 + longueur]
+            if len(message) != longueur:
+                continue
+            print("Source :", mac_str(trame[6:12]))
+            print("Destination :", mac_str(trame[0:6]))
+            print("Message :", message.decode("utf-8", "replace"))
+
+p = argparse.ArgumentParser()
+p.add_argument("mode", choices=["send", "recv"])
+p.add_argument("interface")
+p.add_argument("mac", nargs="?")
+p.add_argument("message", nargs="?")
+args = p.parse_args()
+
+if args.mode == "recv":
+    recevoir(args.interface)
+else:
+    if not args.mac or args.message is None:
+        p.error("Indiquer la MAC destination et le message")
+    envoyer(args.interface, args.mac, args.message)</code></pre>
+<h3>Étape D — Échanger un message sans IP</h3>
+<p>Sur <strong>PC B</strong> :</p><pre><code>sudo python3 ethernet.py recv enp2s0</code></pre>
+<p>Sur <strong>PC A</strong>, remplacer l'adresse fictive par la <strong>MAC réelle du PC B</strong> :</p>
+<pre><code>sudo python3 ethernet.py send enp2s0 BB:BB:BB:BB:BB:02 "Bonjour PC B"</code></pre>
+<p>Résultat attendu sur B : affichage de la MAC source, de la MAC destination et du texte « Bonjour PC B ».</p>
+<h3>Étape E — Observer Ethernet dans Wireshark</h3>
+<p>Sur l'interface concernée, filtrer avec <code>eth.type == 0x88b5</code>. Identifier les 6 octets de MAC destination, les 6 octets de MAC source, le champ EtherType et la charge utile. Constater <strong>l'absence d'en-tête IP</strong> dans la trame.</p>
+<h2 id="questions">4. Questions aux étudiants</h2>
+<ol><li>Pourquoi l'envoi fonctionne-t-il alors qu'aucun PC n'a d'adresse IP ?</li><li>Quel est le rôle des deux adresses MAC dans une trame ?</li><li>Pourquoi utilise-t-on une socket Linux <code>AF_PACKET</code> plutôt qu'une socket TCP ?</li><li>Quel rôle joue l'EtherType <code>0x88B5</code> ?</li><li>Modifier le texte transmis et relever la charge utile dans Wireshark.</li><li>Que se passe-t-il si la MAC destination désigne une autre machine ?</li><li>Pourquoi un <code>ping</code> IP classique ne marche-t-il pas ici ?</li><li>Qu'arriverait-il si les PC étaient placés dans deux VLAN séparés ?</li></ol>
+<h2>5. Corrigé enseignant</h2>
+<details><summary>Afficher les réponses expliquées</summary>
+<ol><li>Ethernet peut transporter une trame au niveau liaison sans utiliser IP.</li><li>Les MAC identifient les interfaces destinataire et émettrice au sein de la trame.</li><li><code>AF_PACKET</code> permet de produire et capter des trames Ethernet directement sous Linux.</li><li>Le champ indique le protocole de la charge utile ; <code>0x88B5</code> sert ici à notre essai.</li><li>Les octets de la charge utile correspondent au texte UTF-8, après le champ longueur de deux octets.</li><li>En fonctionnement ordinaire, l'interface de B n'accepte pas une trame unicast destinée à une autre MAC ; l'observation en capture peut varier selon le mode promiscuous.</li><li>Ping utilise ICMP au-dessus d'IP, absent de l'interface de TP.</li><li>Sans pont ou mécanisme de niveau 2 entre VLAN, ces trames ne passent pas d'un VLAN à l'autre.</li></ol></details>
+<h2>6. Remise en état</h2>
+<p>Sur chaque PC :</p>
+<pre><code>sudo sysctl -w net.ipv6.conf.enp2s0.disable_ipv6=0
+sudo nmcli device set enp2s0 managed yes
+sudo nmcli device connect enp2s0</code></pre>
+<p>Réactiver, si nécessaire, le profil NetworkManager initial. Vérifier ensuite <code>ip addr show</code>.</p>
+<div class="card note"><strong>À retenir :</strong> Ethernet permet de transmettre des trames entre interfaces du même lien de couche 2 sans IP. IP est utile pour l'adressage logique et l'acheminement entre réseaux ; TCP, UDP et ICMP s'appuient sur IP.</div>
+<p>Pour aller plus loin : transformer le script en <strong>messagerie bidirectionnelle</strong>, puis comparer l'échange avec ARP et les VLAN.</p>
+<p><a class="button" href="../../">← Retour à l'atlas Bash World</a></p>
+</main>
+<footer>✳ Bash World — TP pratiques · Réseaux · Première expérience : Ethernet sans IP</footer>
+</body></html>

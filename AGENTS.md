@@ -44,7 +44,7 @@ Construire une encyclopédie personnelle, interactive et interdisciplinaire. Exp
 - Toute modification de `donnees/` doit passer `node outils/verifier.mjs` avant publication.
 
 ## Design
-Style « Vintage Vert » : vert #1C322D, crème #F8F3EE, or #EBB552, rose #F1CDBE. Présentation aérée, contrastes, clavier, mobile et `prefers-reduced-motion`. Le graphe 3D doit avoir une alternative textuelle.
+Style « Encre sur papier » (nouvelle référence impérative) : Nunito Regular pour le texte, Nunito Black 900/1000 pour les titres en majuscules ; papier #F4F2EC, papier 2 #ECE9E0, encre #16150F, secondaires #4A4840 et #6E6B62, contours #8C8980, jaune #F6D77A, or #D9A21B, bleu #9CC3E6, rouge #C8372D, vert #2F6B4F. Cartes blanches arrondies à contour fin, pilules avec ombre décalée, conclusion jaune pleine largeur, bandeaux noirs à mots clés jaunes. Contrastes, clavier, mobile et `prefers-reduced-motion`. Le graphe 3D doit avoir une alternative textuelle.
 
 ## Sécurité et Git
 Dépôt GitHub privé, site Bash World public sur Cloudflare Pages : ne jamais inclure de données personnelles ni de secrets dans les articles ; ne pas changer la visibilité du dépôt. Pas de télémétrie ou de secrets. Respecter les modifications existantes. Aucun push forcé. Regrouper une évolution logique en un **commit cohérent** ; préférer une branche puis une fusion *squash* pour éviter les déploiements intermédiaires incomplets. Pages compatibles avec tout hébergement HTTP statique.
